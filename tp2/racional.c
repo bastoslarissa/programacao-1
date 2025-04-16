@@ -47,11 +47,7 @@ long mmc (long a, long b) {
 
 }
 
-/* Recebe um número racional e o simplifica.
- * Por exemplo, ao receber 10/8 deve retornar 5/4.
- * Se ambos numerador e denominador forem negativos, deve retornar um positivo.
- * Se o denominador for negativo, o sinal deve migrar para o numerador.
- * Se r for inválido, devolve-o sem simplificar. */
+//Recebe um número racional e o simplifica.
 struct racional simplifica_r (struct racional r) {
     int num_simplificado;
     int den_simplificado;
@@ -66,10 +62,10 @@ struct racional simplifica_r (struct racional r) {
       den_simplificado *= (-1);
     }
 
-    /* if (den_simplificado < 0) {
+    if (den_simplificado < 0) {
       num_simplificado *= (-1);
       den_simplificado *= (-1);
-    } */
+    }
 
     if (valido_r(num_r) == 1) {
       num_r.num = num_simplificado;
@@ -81,4 +77,72 @@ struct racional simplifica_r (struct racional r) {
 }
 
 /* Cria um número racional com o numerador e denominador indicados. */
-struct racional cria_r (long numerador, long denominador);
+struct racional cria_r (long numerador, long denominador) {
+
+  num_r.num = numerador;
+  num_r.den = denominador;
+
+  return (num_r);
+
+}
+
+/* Retorna 1 se o racional r for válido ou 0 se for inválido. */
+int valido_r (struct racional r) {
+
+  if ((r.den) == 0)
+    return(0);
+  else 
+    return (1);
+
+}
+
+/* Retorna um número racional aleatório na forma simplificada. */
+struct racional sorteia_r (long min, long max) {
+
+  struct racional r;
+
+  r.num = aleat (min, max);
+  r.den = aleat (min, max);
+
+  return (simplifica_r(r));
+
+}
+
+/* Imprime um racional r, respeitando estas regras:
+   - o racional deve ser impresso na forma simplificada;
+   - não imprima espaços em branco e não mude de linha;
+   - a saída deve ter o formato "num/den", a menos dos casos abaixo:
+     - se o racional for inválido, imprime a mensagem "NaN" (Not a Number);
+     - se o numerador for 0, imprime somente "0";
+     - se o denominador for 1, imprime somente o numerador;
+     - se o numerador e denominador forem iguais, imprime somente "1";
+     - se o racional for negativo, o sinal "-" vem antes do numerador;
+     - se numerador e denominador forem negativos, o racional é positivo. */
+void imprime_r (struct racional r) {
+ 
+  int mmc_valor;
+  struct racional r;
+
+  if (!valido_r(r1) || !valido_r(r2)) {
+    printf("NUMERO INVALIDO \n");
+    r.num = 0;
+    r.den = 0;
+    return(r);
+  }
+
+  if (r1.den == r2.den) {
+    r.num = (r1.num + r2.num);
+    r.den = r1.den;
+    return (r);
+  } 
+
+  else { 
+    mmc_valor = mmc(r1.den, r2.den);
+    r.num = ( ((mmc_valor / r1.den) * r1.num) + ((mmc_valor / r2.den) * r2.num) );
+    r.den = mmc_valor;
+  }
+
+    return (r);
+        
+}
+
