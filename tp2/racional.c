@@ -78,6 +78,7 @@ struct racional simplifica_r (struct racional r) {
 
 /* Cria um número racional com o numerador e denominador indicados. */
 struct racional cria_r (long numerador, long denominador) {
+  struct racional num_r; 
 
   num_r.num = numerador;
   num_r.den = denominador;
@@ -118,22 +119,19 @@ struct racional sorteia_r (long min, long max) {
      - se o numerador e denominador forem iguais, imprime somente "1";
      - se o racional for negativo, o sinal "-" vem antes do numerador;
      - se numerador e denominador forem negativos, o racional é positivo. */
-void imprime_r (struct racional r) {
+void imprime_r (struct racional r) { /* é um void, só vai printar as coisas na tela mesmo, não vai retornar nada */
  
   int mmc_valor;
-  struct racional r;
 
-  if (!valido_r(r1) || !valido_r(r2)) {
-    printf("NUMERO INVALIDO \n");
-    r.num = 0;
-    r.den = 0;
-    return(r);
+  r = simplifica(r);
+  
+  if (!valido_r(r)) {
+    printf("Nan");
   }
 
   if (r1.den == r2.den) {
     r.num = (r1.num + r2.num);
     r.den = r1.den;
-    return (r);
   } 
 
   else { 
@@ -142,7 +140,22 @@ void imprime_r (struct racional r) {
     r.den = mmc_valor;
   }
 
-    return (r);
         
 }
 
+/* Compara dois racionais r1 e r2. Retorno: -2 se r1 ou r2 for inválido,
+ * -1 se r1 < r2, 0 se r1 = r2 ou 1 se r1 > r2 */
+int compara_r (struct racional r1, struct racional r2) {
+
+  if (!valido_r(r1) || !valido_r(r2)) 
+    return (-2);
+
+  if ( (r1.num / r1.den) < (r2.num / r2.den) ) 
+    return (-1);
+
+  if ((r1.num / r1.den) == (r2.num / r2.den) )
+    return (0);
+
+  if ( (r1.num / r1.den) > (r2.num / r2.den) )
+    return (1);
+}
