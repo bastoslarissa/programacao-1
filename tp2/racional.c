@@ -25,17 +25,10 @@ long aleat (long min, long max) {
 /* calcula o MDC pelo método de Euclides */
 long mdc (long a, long b) {
 
-  if (a == 0)
-    return (b);
-  
   if (b == 0)
-    return (a);
-
-  int quociente = (a / b);
-  int resto = (a % b);
-
-  a = b * quociente + resto;
-    return (mdc(a,b));
+  return a;
+else
+  return mdc(b, a % b);
 }
 
 /* Mínimo Múltiplo Comum entre a e b */
@@ -109,53 +102,131 @@ struct racional sorteia_r (long min, long max) {
 
 }
 
-/* Imprime um racional r, respeitando estas regras:
-   - o racional deve ser impresso na forma simplificada;
-   - não imprima espaços em branco e não mude de linha;
-   - a saída deve ter o formato "num/den", a menos dos casos abaixo:
-     - se o racional for inválido, imprime a mensagem "NaN" (Not a Number);
-     - se o numerador for 0, imprime somente "0";
-     - se o denominador for 1, imprime somente o numerador;
-     - se o numerador e denominador forem iguais, imprime somente "1";
-     - se o racional for negativo, o sinal "-" vem antes do numerador;
-     - se numerador e denominador forem negativos, o racional é positivo. */
-void imprime_r (struct racional r) { /* é um void, só vai printar as coisas na tela mesmo, não vai retornar nada */
+/* Imprime um racional r, respeitando estas regras: */
+void imprime_r (struct racional r) {
  
-  int mmc_valor;
-
-  r = simplifica(r);
+  r = simplifica_r(r);
   
   if (!valido_r(r)) {
     printf("Nan");
   }
 
-  if (r1.den == r2.den) {
-    r.num = (r1.num + r2.num);
-    r.den = r1.den;
-  } 
+  else if (r.num == 0)
+    printf("%d", 0);
 
-  else { 
-    mmc_valor = mmc(r1.den, r2.den);
-    r.num = ( ((mmc_valor / r1.den) * r1.num) + ((mmc_valor / r2.den) * r2.num) );
-    r.den = mmc_valor;
-  }
+  else if (r.den == 1)
+    printf("%ld", r.num);
 
-        
-}
+  else if (r.num == r.den)
+    printf("%d", 1);
+  
+  else 
+    printf("%ld/%ld", r.num, r.den);
+  
+} 
 
 /* Compara dois racionais r1 e r2. Retorno: -2 se r1 ou r2 for inválido,
  * -1 se r1 < r2, 0 se r1 = r2 ou 1 se r1 > r2 */
-int compara_r (struct racional r1, struct racional r2) {
+/* int compara_r (struct racional r1, struct racional r2) {
 
+  int r1_var, r2_var;
+
+  r1_var = r1.num * r2.den;
+  r2_var = r2.num * r1.den;
+
+  if (!valido_r(r1) || !valido_r(r2)) 
+    return (-2);
+
+  if (r1_var < r2_var)
+    return(-1);
+  
+  if (r1_var == r2_var)
+    return (0);
+
+  return (1); 
+
+}*/
+
+/* Compara dois racionais r1 e r2. Retorno: -2 se r1 ou r2 for inválido,
+ * -1 se r1 < r2, 0 se r1 = r2 ou 1 se r1 > r2 */
+/* int compara_r (struct racional r1, struct racional r2) {
+  
   if (!valido_r(r1) || !valido_r(r2)) 
     return (-2);
 
   if ( (r1.num / r1.den) < (r2.num / r2.den) ) 
     return (-1);
 
-  if ((r1.num / r1.den) == (r2.num / r2.den) )
+  if ( (r1.num / r1.den) == (r2.num / r2.den) )
     return (0);
 
-  if ( (r1.num / r1.den) > (r2.num / r2.den) )
+  return (1);
+  
+} */
+
+/* Retorna a soma dos racionais r1 e r2 no parametro *r3. */
+int soma_r (struct racional r1, struct racional r2, struct racional *r3) {
+
+
+  if ( (!valido_r(r1) || !valido_r(r2)) || (r3 == NULL) )
+    return (0);
+
+  if (r1.den == r2.den) {
+    r3 -> num = (r1.num + r2.num);
+    r3 -> den = r1.den;
+  }
+
+  else {
+    r3 -> num =  (( (mmc(r1.den, r2.den)) / r1.den) * r1.num) + (((mmc(r1.den, r2.den)) / r2.den) * r2.num);
+    r3 -> den = mmc(r1.den, r2.den);
+  }
+  
+  return (1);
+}
+
+/* Retorna a subtracao dos racionais r1 e r2 no parametro *r3. */
+int subtrai_r (struct racional r1, struct racional r2, struct racional *r3) {
+
+    if ( (!valido_r(r1) || !valido_r(r2)) || (r3 == NULL) )
+    return (0);
+
+  if (r1.den == r2.den) {
+    r3 -> num = (r1.num - r2.num);
+    r3 -> den = r1.den;
+  }
+
+  else {
+    r3 -> num =  (( (mmc(r1.den, r2.den)) / r1.den) * r1.num) - (((mmc(r1.den, r2.den)) / r2.den) * r2.num);
+    r3 -> den = mmc(r1.den, r2.den);
+  }
+  
+  return (1);
+}
+
+/* Retorna a multiplicacao dos racionais r1 e r2 no parametro *r3. */
+int multiplica_r (struct racional r1, struct racional r2, struct racional *r3) {
+
+    if ( (!valido_r(r1) || !valido_r(r2)) || (r3 == NULL) )
+    return (0);
+ 
+      r3 -> num = (r1.num * r2.num);
+      r3 -> den = (r1.den * r2.den);
+    
     return (1);
+
+}
+
+/* Retorna a divisao dos racionais r1 e r2 no parametro *r3.
+ * Retorna 1 se a operacao foi bem sucedida ou
+ *         0 se r1 ou r2 for inválido ou se *r3 for nulo */
+int divide_r (struct racional r1, struct racional r2, struct racional *r3) {
+
+  r3 -> num = (r1.num * r2.den);
+  r3 -> den = (r1.den * r2.num);
+
+  if ( (!valido_r(r1) || !valido_r(r2)) || (r3 == NULL) )
+  return (0);
+
+  return (1);
+  
 }
