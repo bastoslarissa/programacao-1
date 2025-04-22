@@ -43,7 +43,9 @@ int main ()
 {
 
   struct racional v[SIZE], v_aux[SIZE];
+  struct racional *r3;
   int n, i, j = 0, m = 0;
+  int soma;
 
   scanf("%d", &n);
 
@@ -87,7 +89,12 @@ int main ()
      imprime_r(v_aux[i]);
      printf(" ");
   }
-  
+
+  /* Calcula a soma dos elementos do vetor */
+  for (i = 0; i < m-1; i++) {
+    soma_r(v[i], v[i + 1], r3);
+    soma += r3;
+  }
   
   return (0) ;
 }

@@ -125,44 +125,23 @@ void imprime_r (struct racional r) {
   
 } 
 
-/* Compara dois racionais r1 e r2. Retorno: -2 se r1 ou r2 for inválido,
- * -1 se r1 < r2, 0 se r1 = r2 ou 1 se r1 > r2 */
-/* int compara_r (struct racional r1, struct racional r2) {
-
-  int r1_var, r2_var;
-
-  r1_var = r1.num * r2.den;
-  r2_var = r2.num * r1.den;
-
-  if (!valido_r(r1) || !valido_r(r2)) 
-    return (-2);
-
-  if (r1_var < r2_var)
-    return(-1);
-  
-  if (r1_var == r2_var)
-    return (0);
-
-  return (1); 
-
-}*/
 
 /* Compara dois racionais r1 e r2. Retorno: -2 se r1 ou r2 for inválido,
  * -1 se r1 < r2, 0 se r1 = r2 ou 1 se r1 > r2 */
-/* int compara_r (struct racional r1, struct racional r2) {
-  
+int compara_r (struct racional r1, struct racional r2) {
+    
   if (!valido_r(r1) || !valido_r(r2)) 
     return (-2);
 
-  if ( (r1.num / r1.den) < (r2.num / r2.den) ) 
+  if (((float)r1.num / r1.den) < ((float)r2.num / r2.den))
     return (-1);
 
-  if ( (r1.num / r1.den) == (r2.num / r2.den) )
+  if (((float)r1.num / r1.den) == ((float)r2.num / r2.den))
     return (0);
 
   return (1);
   
-} */
+}
 
 /* Retorna a soma dos racionais r1 e r2 no parametro *r3. */
 int soma_r (struct racional r1, struct racional r2, struct racional *r3) {
