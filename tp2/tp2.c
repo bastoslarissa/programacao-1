@@ -39,13 +39,14 @@ void ordena (struct racional v_aux[], int tam) {
 
 
 /* programa principal */
-int main ()
-{
+int main () {
 
   struct racional v[SIZE], v_aux[SIZE];
-  struct racional *r3;
+  struct racional *r3 = NULL;
+  struct racional soma;
+  soma.num = 0;
+  soma.den = 0;
   int n, i, j = 0, m = 0;
-  int soma;
 
   scanf("%d", &n);
 
@@ -74,7 +75,7 @@ int main ()
   }
   
   /* Imprime o conteúdo do vetor sem racionais inválidos */
-  printf("\n VETOR = ");
+  printf("\nVETOR = ");
   for (i = 0; i < m; i++) {
      imprime_r(v_aux[i]);
      printf(" ");
@@ -84,7 +85,7 @@ int main ()
   ordena(v_aux, m);
 
   /* Imprime o vetor ordenado */
-  printf("\n VETOR = ");
+  printf("\nVETOR = ");
   for (i = 0; i < m; i++) {
      imprime_r(v_aux[i]);
      printf(" ");
@@ -92,9 +93,14 @@ int main ()
 
   /* Calcula a soma dos elementos do vetor */
   for (i = 0; i < m-1; i++) {
-    soma_r(v[i], v[i + 1], r3);
-    soma += r3;
+    soma_r(soma, v[i], &soma);
+
   }
-  
-  return (0) ;
+
+  printf("%ld/%ld", r3 -> num, r3 -> den);
+    return (0) ;
+
 }
+  
+
+

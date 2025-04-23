@@ -105,13 +105,14 @@ struct racional sorteia_r (long min, long max) {
 /* Imprime um racional r, respeitando estas regras: */
 void imprime_r (struct racional r) {
  
-  r = simplifica_r(r);
-  
   if (!valido_r(r)) {
     printf("Nan");
+    return;
   }
 
-  else if (r.num == 0)
+  r = simplifica_r(r);
+
+  if (r.num == 0)
     printf("%d", 0);
 
   else if (r.den == 1)
