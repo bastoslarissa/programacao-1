@@ -38,12 +38,12 @@ long mmc (long a, long b) {
 
   return(mmc_res);
 
-}
+} 
 
 //Recebe um número racional e o simplifica.
 struct racional simplifica_r (struct racional r) {
-    int num_simplificado;
-    int den_simplificado;
+    long num_simplificado;
+    long den_simplificado;
     struct racional num_r = r;
   
     num_simplificado = (num_r.num) / mdc(num_r.num, num_r.den);
@@ -160,6 +160,8 @@ int soma_r (struct racional r1, struct racional r2, struct racional *r3) {
     r3 -> num =  (( (mmc(r1.den, r2.den)) / r1.den) * r1.num) + (((mmc(r1.den, r2.den)) / r2.den) * r2.num);
     r3 -> den = mmc(r1.den, r2.den);
   }
+
+  *r3 = simplifica_r(*r3);
   
   return (1);
 }

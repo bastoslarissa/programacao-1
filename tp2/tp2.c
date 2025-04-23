@@ -41,11 +41,15 @@ void ordena (struct racional v_aux[], int tam) {
 /* programa principal */
 int main () {
 
+  /* Declaração de variáveis */
   struct racional v[SIZE], v_aux[SIZE];
-  struct racional *r3 = NULL;
   struct racional soma;
   soma.num = 0;
-  soma.den = 0;
+  soma.den = 1;
+  struct racional soma_aux;
+  struct racional *r3 = &soma;
+  r3 -> num = 0;
+  r3 -> den = 1;
   int n, i, j = 0, m = 0;
 
   scanf("%d", &n);
@@ -92,12 +96,14 @@ int main () {
   }
 
   /* Calcula a soma dos elementos do vetor */
-  for (i = 0; i < m-1; i++) {
-    soma_r(soma, v[i], &soma);
-
+  for (i = 0; i < m; i++) {
+    soma_r(soma, v_aux[i], &soma_aux);
+    soma = soma_aux;
   }
 
-  printf("%ld/%ld", r3 -> num, r3 -> den);
+  printf("\nSOMA = ");
+  imprime_r(*r3);
+  printf("\n");
     return (0) ;
 
 }
