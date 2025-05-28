@@ -17,7 +17,7 @@ struct fpnodo_t {
 // descreve uma fila de prioridades
 struct fprio_t {
     struct fpnodo_t *primeiro;
-    struct fpnofo_t *ultimo;
+    struct fpnodo_t *ultimo;
     int tamanho;
 } ;
 
@@ -102,7 +102,7 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio) {
     
     /* variável para contabilizar o auxiliar */
     struct fpnodo_t *aux_anterior = f -> primeiro;
-
+    
     while (aux -> prio < prio) {
         aux_anterior = aux;
         aux = aux -> prox;
@@ -115,5 +115,46 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio) {
 
 }
 
+// Retira o primeiro item da fila e o devolve; o tipo e a prioridade
+// do item são devolvidos nos parâmetros "tipo" e "prio".
+// Retorno: ponteiro para o item retirado ou NULL se fila vazia ou erro.
+void *fprio_retira (struct fprio_t *f, int *tipo, int *prio) {
 
+    if (!f)
+        return NULL;
+
+    struct fpnodo_t *aux;
+
+    aux = f -> primeiro;
+    *tipo = f -> primeiro -> tipo;
+    *prio = f -> primeiro -> prio;
+    f -> primeiro = f -> primeiro -> prox;
+
+    return aux;
+
+}
+
+// Informa o número de itens na fila.
+// Retorno: N >= 0 ou -1 se erro.
+int fprio_tamanho (struct fprio_t *f) {
+
+    if (f -> tamanho < 0)
+        return -1;
+    
+    return f -> tamanho;
+
+}
+
+// Imprime o conteúdo da fila no formato "(tipo prio) (tipo prio) ..."
+// Para cada item deve ser impresso seu tipo e sua prioridade, com um
+// espaço entre valores, sem espaços antes ou depois e sem nova linha.
+void fprio_imprime (struct fprio_t *f) {
+
+    struct fpnodo_t *aux = f -> primeiro;
+
+    for (int i = 1; i < f -> tamanho; i++) {
+        printf("(%d %d) ", aux -> tipo, aux -> prio);
+        aux = aux -> prox;
+    }
+}
 
