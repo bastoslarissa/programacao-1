@@ -62,9 +62,9 @@ struct fprio_t *fprio_destroi (struct fprio_t *f) {
     return NULL;
 }
 
-// Cria um nodo.
+// Cria um nodo vazio.
 //Retorno: ponteiro para o nodo criado ou NULL se erro.
-struct fpnodo_t *fpnodo_cria (void *item, int tipo, int prio, struct fpnodo_t *prox) {
+struct fpnodo_t *fpnodo_cria (void *item, int tipo, int prio) {
 
     struct fpnodo_t *nodo = malloc(sizeof(struct fpnodo_t));
 
@@ -73,13 +73,12 @@ struct fpnodo_t *fpnodo_cria (void *item, int tipo, int prio, struct fpnodo_t *p
         return NULL;
 
     /* atribui nulo aos elementos do nodo */
-    nodo -> prox = prox;
+    nodo -> prox = NULL;
     nodo -> item = item;
     nodo -> tipo = tipo;
     nodo -> prio = prio;
 
     return nodo;
-
 }
 
 // Insere o item na fila, mantendo-a ordenada por prioridades crescentes.
@@ -87,32 +86,34 @@ struct fpnodo_t *fpnodo_cria (void *item, int tipo, int prio, struct fpnodo_t *p
 // na ordem em que inseriu).
 // Inserir duas vezes o mesmo item (o mesmo ponteiro) é um erro.
 // Retorno: número de itens na fila após a operação ou -1 se erro.
-int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio) {
-
-    struct fpnodo_t *aux = f -> primeiro;
-
-    /* verifica se o ponteiro a ser inserido já está na fila */
-    for (int i = 0; i < f -> tamanho; i++) {
-
-        if (aux -> item == item)
-            return -1;
-        
-        aux = aux -> prox;
-    }
+int fprio_insere(struct fprio_t *f, void *item, int tipo, int prio) {
     
-    /* variável para contabilizar o auxiliar */
-    struct fpnodo_t *aux_anterior = f -> primeiro;
-    
-    while (aux -> prio < prio) {
-        aux_anterior = aux;
-        aux = aux -> prox;
+    if (!f || !item) 
+        return -1;  
+
+    struct fpnodo_t *cont = f -> primeiro;
+    while (cont) {
+        if (cont -> item == item) 
+            return -1;  
+        cont = cont -> prox;
     }
 
-    struct fpnodo_t *novo_nodo = fpnodo_cria(item, tipo, prio, aux_anterior -> prox);
-    aux_anterior -> prox = novo_nodo;
+    struct fpnodo_t *novo_nodo = fpnodo_cria(item, tipo, prio);
+
+    if (!f -> primeiro || f -> primeiro -> prio > prio) {
+        novo_nodo -> prox = f -> primeiro;
+        f -> primeiro = novo_nodo;
+    } else {
+        struct fpnodo_t *aux = f -> primeiro;
+        while (aux -> prox && (aux -> prox -> prio < prio || (aux -> prox -> prio == prio && aux -> prox -> tipo != tipo))){
+            aux = aux -> prox;
+        }
+
+        novo_nodo -> prox = aux -> prox;
+        aux -> prox = novo_nodo;
+    }
 
     return f -> tamanho + 1;
-
 }
 
 // Retira o primeiro item da fila e o devolve; o tipo e a prioridade
@@ -120,15 +121,16 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio) {
 // Retorno: ponteiro para o item retirado ou NULL se fila vazia ou erro.
 void *fprio_retira (struct fprio_t *f, int *tipo, int *prio) {
 
-    if (!f)
+    if (!f || !f -> primeiro || !tipo || !prio)
         return NULL;
+    
 
-    struct fpnodo_t *aux;
-
-    aux = f -> primeiro;
+    struct fpnodo_t *aux = f -> primeiro;
     *tipo = f -> primeiro -> tipo;
     *prio = f -> primeiro -> prio;
     f -> primeiro = f -> primeiro -> prox;
+
+    f -> tamanho = f -> tamanho -1;
 
     return aux;
 
@@ -148,12 +150,34 @@ int fprio_tamanho (struct fprio_t *f) {
 // Imprime o conteúdo da fila no formato "(tipo prio) (tipo prio) ..."
 // Para cada item deve ser impresso seu tipo e sua prioridade, com um
 // espaço entre valores, sem espaços antes ou depois e sem nova linha.
-void fprio_imprime (struct fprio_t *f) {
+/* void fprio_imprime (struct fprio_t *f) {
+
+    if (!f || !f -> primeiro) 
+        return;
 
     struct fpnodo_t *aux = f -> primeiro;
 
-    for (int i = 1; i < f -> tamanho; i++) {
+    while (aux) {        
         printf("(%d %d) ", aux -> tipo, aux -> prio);
+        aux = aux -> prox;
+    }
+
+        printf("(%d %d)", f -> ultimo -> tipo, f -> ultimo -> prio);
+} */
+
+void fprio_imprime(struct fprio_t *f) {
+    if (!f || !f -> primeiro) 
+        return;  
+
+    struct fpnodo_t *aux = f -> primeiro;
+    int primeiro = 1;
+
+    while (aux) {    
+        if (!primeiro) 
+            printf(" ");
+            
+        printf("(%d %d)", aux -> tipo, aux -> prio);
+        primeiro = 0;
         aux = aux -> prox;
     }
 }
