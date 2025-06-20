@@ -56,6 +56,7 @@ struct fprio_t *fprio_destroi (struct fprio_t *f) {
         f -> tamanho--;
 
     }
+
     /* libera a memória alocada para a fila */
     free(f);
 
@@ -68,6 +69,7 @@ struct fpnodo_t *fpnodo_cria (void *item, int tipo, int prio) {
 
     struct fpnodo_t *nodo = malloc(sizeof(struct fpnodo_t));
 
+    /* verifica se o nodo é válido */
     if (nodo == NULL) 
         return NULL;
 
