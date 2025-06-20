@@ -140,7 +140,7 @@ int fila_tamanho (struct fila_t *f) {
 void fila_imprime (struct fila_t *f) {
 
     /* verifica se a fila é válida */
-    if(f -> num == 0) {
+    if(f == NULL || f -> num == 0) {
         printf("Fila vazia");
         return;
     }
