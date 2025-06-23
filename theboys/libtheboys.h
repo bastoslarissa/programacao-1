@@ -23,7 +23,6 @@
 #define TIPO_FIM 10
 
 extern int N_COMPOSTOS_V;
-int cont_lef = 0;
 
 ////////////////////////////////// ENTIDADES ///////////////////////////////////
 

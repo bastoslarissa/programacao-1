@@ -3,12 +3,42 @@
 #include <math.h>
 #include "libtheboys.h"
 
+
+//Função auxiliar
+// Cria um evento
+struct eventos *cria_evento (int tempo, int tipo, struct heroi *h, struct base *b, struct base *destino, struct missao *m, struct mundo *w) {
+
+    struct eventos *e = malloc (sizeof(struct eventos));
+
+    /* verifica */
+    if (!e) {
+        printf("Erro ao alocar evento \n");
+        return;
+    }
+
+    /* atribui valores */
+    e -> tempo = tempo;
+    e -> tipo = tipo;
+    e -> h = h;
+    e -> b = b;
+    e -> destino = destino;
+    e -> m = m;
+    e -> w = w;
+
+    return e;
+}
+
 // Evento CHEGA
 // Herói chega na base
 // Caso a base esteja lotada, o herói decide se espera para entrar ou desiste
-void *chega (int tempo, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef) {
+void *chega (int tempo, struct eventos *evento) {
 
-    int esperar = 0;
+    /* parâmetros */
+    struct heroi *h = evento -> h;
+    struct base *b = evento -> b;
+    struct mundo *w = evento -> w;
+    struct fprio_t *lef = evento -> lef;
+
 
     /* atualiza o id da base que o herói está */
     h -> base = b -> base_id;
@@ -18,24 +48,27 @@ void *chega (int tempo, struct heroi *h, struct base *b, struct mundo *w, struct
 
     /* verifica se há vagas na base e se há espaço na fila de espera */
     if ((b -> lotacao < lotacao_tam) && (b -> espera -> prim == 0)) {
-        esperar = 1;
+        
+        /* entra */
+        struct eventos *evento_criado = cria_evento(tempo, TIPO_ENTRA, h, b, NULL, NULL, w);
+        fprio_insere(lef, evento_criado, TIPO_ENTRA, tempo);  
     }
     /* verifica se o herói tem paciência o suficiente para esperar */
     else if (h -> paciencia > 10 * fila_tam) {
-        esperar = 0;
-    }
 
-    /* se o herói for esperar, insere na LEF o evento ESPERA */
-    if (esperar == 1) {
-        fprio_insere(lef, &w -> evento, TIPO_ESPERA, tempo);
-        cont_lef++;
+        /* escolhe esperar */
+        struct eventos *evento_criado = cria_evento(tempo, TIPO_ESPERA, h, b, NULL, NULL, w);
+        fprio_insere(lef, evento_criado, TIPO_ESPERA, tempo);
+
         printf("%6d: CHEGA HEROI %2d BASE %d (%2d/%2d) ESPERA", tempo, h->heroi_id, b->base_id, cjto_card(b -> presentes), b -> lotacao);
 
+
     }
-    /* se o herói não for esperar, insere na LEF o evento DESISTE */
+    /* escolhe desistir */
     else {
-        fprio_insere(lef, w -> evento.tipo , TIPO_DESISTE, tempo);
-        cont_lef++;
+        struct eventos *evento_criado = cria_evento(tempo, TIPO_DESISTE, h, b, NULL, NULL, w);
+        fprio_insere(lef, evento_criado, TIPO_DESISTE, tempo);
+
         printf("%6d: CHEGA HEROI %2d BASE %d (%2d/%2d) DESISTE", tempo, h->heroi_id, b->base_id, cjto_card(b -> presentes), b -> lotacao);
 
     }
@@ -44,8 +77,14 @@ void *chega (int tempo, struct heroi *h, struct base *b, struct mundo *w, struct
 // Evento ESPERA
 // Herói entra na fila de espera da base 
 // Porteiro é avisado para verificar a fila
-void *espera (int tempo, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef) {
+void *espera (int tempo, struct eventos *evento) {
     
+    /* parâmetros */
+    struct base *b = evento -> b;
+    struct heroi *h = evento -> h;
+    struct mundo *w = evento -> w;
+    struct fprio_t *lef = evento -> lef;
+
     /* adiciona o herói no fim da fila da base */
     fila_insere(b -> espera, h);
 
@@ -54,8 +93,8 @@ void *espera (int tempo, struct heroi *h, struct base *b, struct mundo *w, struc
         b -> cont_espera = cjto_card(b -> espera);
 
     /* insere na LEF o evento de AVISA */
-    fprio_insere(lef, avisa, TIPO_AVISA, tempo) ;
-    cont_lef++;
+    struct eventos *evento_criado = cria_evento(tempo, TIPO_AVISA, NULL, b, NULL, NULL, w);
+    fprio_insere(lef, evento_criado,TIPO_AVISA, tempo) ;
 
     printf("%6d: ESPERA HEROI %2d BASE %d (%2d)", tempo, h->heroi_id, b->base_id, cjto_card(b -> espera));
 
@@ -479,7 +518,6 @@ void *inicia_mundo(struct heroi *h, struct base *b, struct missao *m, struct mun
   /* agenda a chegada dos heróis na base */
 
     for (int i = 0; i < N_HEROIS; i++) {
-        struct eventos *evento = malloc (sizeof (evento));
         int tempo = rand () % (4320 - 0 + 1) + 0;
         int base_aleatoria = rand () % ((N_BASES - 1) - 0 + 1) + 0;
 
@@ -497,7 +535,6 @@ void *inicia_mundo(struct heroi *h, struct base *b, struct missao *m, struct mun
 
   /* agenda as missões */
   for (int i = 0; i < N_MISSOES; i++) {
-    struct eventos *evento = malloc (sizeof (evento));
     int tempo = rand () % (T_FIM_DO_MUNDO - 0 + 1) + 0;
 
         evento -> tipo = TIPO_MISSAO;
@@ -513,7 +550,6 @@ void *inicia_mundo(struct heroi *h, struct base *b, struct missao *m, struct mun
   }
 
   /* agenda o fim do mundo */
-        struct eventos *evento = malloc (sizeof (evento));
         evento -> tipo = TIPO_FIM;
         evento -> tempo = T_FIM_DO_MUNDO;
         evento -> h = NULL;
