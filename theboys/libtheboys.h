@@ -4,7 +4,7 @@
 #include "conjunto.h"
 
 #define T_INICIO = 0
-#define T_FIM_DO_MUNDO 525600
+#define T_FIM_DO_MUNDO 10
 #define N_TAMANHO_MUNDO 20000
 #define N_HABILIDADES 10
 #define N_HEROIS (N_HABILIDADES * 5)
@@ -29,7 +29,7 @@ extern int N_COMPOSTOS_V;
 struct heroi 
 {
     int heroi_id;
-    int habilidades;
+    struct cjto_t habilidades;
     int paciencia;
     int velocidade;
     int experiencia;
@@ -62,6 +62,18 @@ struct missao
     int *cont_missoes;
 };
 
+struct eventos 
+{
+    int tipo;
+    int tempo;
+    struct heroi *h;
+    struct base *b;
+    struct base *destino;
+    struct mundo *w;
+    struct missao *m;
+    struct fprio_t *lef;
+};
+
 struct mundo 
 {
     int NHerois;
@@ -77,40 +89,28 @@ struct mundo
     struct eventos evento;
 };
 
-struct eventos 
-{
-    int tipo;
-    int tempo;
-    struct heroi *h;
-    struct base *b;
-    struct base *destino;
-    struct mundo *w;
-    struct missoes *m;
-    struct fprio_t *lef;
-};
-
 //------------------------------------------------------------------------------
 
 ////////////////////////////////// EVENTOS /////////////////////////////////////
 
-void *chega (int tempo, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef);
+void *chega (int tempo, struct eventos *evento);
 
-void *espera (int tempo, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef);
+void *espera (int tempo, struct eventos *evento);
 
-void *desiste (int tempo, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef);
+void *desiste (int tempo, struct eventos *evento);
 
-void *avisa (int tempo, struct base *b, struct mundo *w, struct fprio_t *lef);
+void *avisa (int tempo, struct eventos *evento);
 
-void *entra (int tempo, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef);
+void *entra (int tempo, struct eventos *evento);
 
-void *sai (int tempo, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef);
+void *sai (int tempo, struct eventos *evento);
 
-void *viaja (int tempo, struct heroi *h, struct base *b, struct base *destino, struct mundo *w, struct fprio_t *lef);
+void *viaja (int tempo, struct eventos *evento);
 
-void *morre (int tempo, struct heroi *h, struct base *b, struct missao *m, struct mundo *w, struct fprio_t *lef);
+void *morre (int tempo, struct eventos *evento);
 
-void *missao (struct missao *m, int tempo, struct mundo *w, struct fprio_t *lef);
+void *missao (int tempo, struct eventos *evento);
 
-void *fim (int tempo, struct mundo *w, struct fprio_t *lef);
+void *fim (int tempo, struct eventos *evento);
 
-void *inicia_mundo(struct heroi *h, struct base *b, struct missao *m, struct mundo *w, struct eventos *evento, struct fprio_t *lef);
+void *inicia_mundo(struct mundo *w, struct fprio_t *lef);
