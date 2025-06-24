@@ -1,8 +1,19 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #include "libtheboys.h"
 
+//Função auxiliar 
+// Gera um número aleatório
+int aleat (int min, int max) {
+
+    int aleat = rand()%(max - min + 1) + min;
+
+    return aleat;
+
+}
 
 //Função auxiliar
 // Cria um evento
@@ -45,20 +56,19 @@ void *chega (int tempo, struct eventos *evento) {
     /* atualiza o id da base que o herói está */
     h -> base = b -> base_id;
 
-     int lotacao_tam = b->presentes->num;
-     int fila_tam = fila_tamanho(b -> espera);
+    int fila_tam = fila_tamanho(b -> espera);
 
     /* verifica se há vagas na base e se há espaço na fila de espera */
-    if ((b -> lotacao < lotacao_tam) && (b -> espera -> prim == 0)) {
+    if ((cjto_card(b -> presentes) < b -> lotacao) && (b -> espera -> prim == 0)) {
         
-        /* entra */
+        /* herói entra */
         struct eventos *evento_criado = cria_evento(tempo, TIPO_ENTRA, h, b, NULL, NULL, w);
         fprio_insere(lef, evento_criado, TIPO_ENTRA, tempo);  
     }
     /* verifica se o herói tem paciência o suficiente para esperar */
     else if (h -> paciencia > 10 * fila_tam) {
 
-        /* escolhe esperar */
+        /* herói escolhe esperar */
         struct eventos *evento_criado = cria_evento(tempo, TIPO_ESPERA, h, b, NULL, NULL, w);
         fprio_insere(lef, evento_criado, TIPO_ESPERA, tempo);
         
@@ -119,7 +129,7 @@ void *desiste (int tempo, struct eventos *evento) {
     /* herói escolhe uma base de destino aleatória */
     int base_aleat;
 
-    base_aleat = rand () % ((w -> NBases - 1) - 0 + 1) + 0;
+    base_aleat = aleat(0, N_BASES - 1);
     
     d -> base_id = w -> bases[base_aleat].base_id;
 
@@ -146,22 +156,24 @@ void *avisa (int tempo, struct eventos *evento) {
     fila_imprime(b -> espera);
     printf(" ]\n");
 
-    int *heroi_entrando;
+    struct heroi *heroi_entrando;
 
     int lotacao_tam = cjto_card(b -> presentes);
 
     while (b -> lotacao < lotacao_tam && b -> espera -> num > 0) {
-
+        
         /* retira o primeiro herói da fila de espera da base e insere ele no conjunto de heróis presentes */
-        int *ptr = fila_retira(b -> espera);
-        heroi_entrando = ptr;
-        cjto_insere(b -> presentes,*heroi_entrando);
+
+        heroi_entrando = fila_retira(b -> espera);
+        if (heroi_entrando != NULL) {
+            cjto_insere(b -> presentes, heroi_entrando->heroi_id);
+        }
 
         /* insere na LEF o evento ENTRA */
         struct eventos *evento_criado = cria_evento(tempo, TIPO_ENTRA, NULL, b, NULL, NULL, w);
         fprio_insere(lef, evento_criado, TIPO_ENTRA, tempo);
 
-        printf("%6d: AVISA PORTEIRO BASE %d ADMITE %2d\n", tempo, b->base_id, *heroi_entrando);
+        printf("%6d: AVISA PORTEIRO BASE %d ADMITE %2d\n", tempo, b->base_id, heroi_entrando->heroi_id);
     }
 
     return NULL;
@@ -178,7 +190,7 @@ void *entra (int tempo, struct eventos *evento) {
     struct fprio_t *lef = evento -> lef;
 
     /* calcula o tempo de permanência do herói na base */
-    int aleatorio = rand () % (20 - 1 + 1) + 1;
+    int aleatorio = aleat(1, 20);
     int tpb = ((15 + (h -> paciencia)) * aleatorio);
     
     /* insere na LEF o evento SAI */
@@ -209,7 +221,7 @@ void *sai (int tempo, struct eventos *evento) {
     /* herói escolhe uma base de destino aleatória */
     int base_aleat;
 
-    base_aleat = rand () % ((w -> NBases - 1) - 0 + 1) + 0;
+    base_aleat = aleat(0, N_BASES-1);
         
     d -> base_id = w -> bases[base_aleat].base_id;
     
@@ -341,34 +353,32 @@ void *missao (int tempo, struct eventos *evento) {
     /* calcula a base mais próxima */
     struct base *base_mais_prox = bmp(w,m);
 
-    struct cjto_t *herois_xp = cjto_cria(base_mais_prox -> presentes -> cap);
+    struct cjto_t *herois_hab = cjto_cria(base_mais_prox -> presentes -> cap); // cjto para habilidades
 
     /* percorre o conjunto de heróis presentes na base e atribui as habilidades deles a um conjunto */
-    for (int i = 0; i < base_mais_prox->presentes->cap; i++) {
-        if (base_mais_prox->presentes->flag[i]) {
-            for (int k = 0; k < w -> herois[i].habilidades.cap; k++) {
-                if (w -> herois[i].habilidades.flag[k]) {
-                    cjto_insere(herois_xp, k);
-                }
+    for (int i = 0; i < N_HEROIS; i++) {
+
+        if (cjto_pertence(base_mais_prox->presentes, w->herois[i].heroi_id)) {
+
+            for (int h = 0; h < N_HABILIDADES; h++) {
+                if (w->herois[i].habilidades->flag[h])
+                    cjto_insere(herois_hab, h);
             }
-        }  
+        }
     }
- 
-
-
 
     /* verifica se as habilidades dos heróis atendem as habilidades necessárias para a missão */
-    if ((cjto_contem(herois_xp, m ->habilidades)) == 1) {
+    if ((cjto_contem(herois_hab, m ->habilidades)) == 1) {
 
         printf("%6d: MISSAO %d CUMPRIDA BASE %d HABS: [ ", tempo, m->missao_id, base_mais_prox->base_id);
-        cjto_imprime(herois_xp);
+        cjto_imprime(herois_hab);
         printf(" ]\n");
 
         /* contador de quantidade de missões participadas por base */
         base_mais_prox->missoes++;
 
         /* incrementa a experiência dos heróis */
-        for (int i =0; i < herois_xp->cap; i++) {
+        for (int i =0; i < herois_hab->cap; i++) {
             w -> herois[i].experiencia++;
         }
     }
@@ -380,16 +390,16 @@ void *missao (int tempo, struct eventos *evento) {
             /* acha o herói mais experiente */
             struct heroi *maior = &w ->herois[0];
 
-            for (int i = 1; i < herois_xp -> num; i++) {
+            for (int i = 1; i < herois_hab -> num; i++) {
                 if (w -> herois[i].experiencia > maior -> experiencia)
                     *maior = w -> herois[i];
             }
 
-               inter_hab = cjto_inter(&maior -> habilidades, todas_habilidades);
-               uniao_xp = cjto_uniao(herois_xp, &maior -> habilidades);
+               inter_hab = cjto_inter(maior -> habilidades, todas_habilidades);
+               uniao_xp = cjto_uniao(herois_hab, maior -> habilidades);
 
                 printf("%6d: MISSAO %d CUMPRIDA BASE %d HABS: [ ", tempo, m->missao_id, base_mais_prox->base_id);
-                cjto_imprime(herois_xp);
+                cjto_imprime(herois_hab);
                 printf(" ]\n");
 
                     cjto_destroi(inter_hab);
@@ -403,7 +413,7 @@ void *missao (int tempo, struct eventos *evento) {
             fprio_insere(lef, evento_criado, TIPO_MORRE, tempo);
 
             /* incrementa a experiência dos heróis */
-            for (int i =0; i < herois_xp->cap; i++) {
+            for (int i =0; i < herois_hab->cap; i++) {
                 w -> herois[i].experiencia++;
             }
 
@@ -419,7 +429,7 @@ void *missao (int tempo, struct eventos *evento) {
     }
 
     cjto_destroi(todas_habilidades);
-    cjto_destroi(herois_xp);
+    cjto_destroi(herois_hab);
 
     return NULL;
 
@@ -440,12 +450,12 @@ void *fim (int tempo, struct eventos *evento) {
     for (int i = 0; i < N_HEROIS; i++) {
         if ((w -> herois[i].vivo) == 1) {
             printf("HEROI %2d VIVO PAC %3d VEL %4d EXP %4d HABS [ ", w -> herois[i].heroi_id, w -> herois->paciencia, w -> herois->velocidade, w -> herois->experiencia);
-            cjto_imprime(&w -> herois[i].habilidades);
+            cjto_imprime(w -> herois[i].habilidades);
             printf(" ]\n");
         }
         else if ((w -> herois[i].vivo) == 0) {
             printf("HEROI %2d MORTO PAC %3d VEL %4d EXP %4d HABS [ ", w -> herois[i].heroi_id, w -> herois->paciencia, w -> herois->velocidade, w -> herois->experiencia);
-            cjto_imprime(&w -> herois[i].habilidades);
+            cjto_imprime(w -> herois[i].habilidades);
             printf(" ]\n");            
         }
     }
@@ -519,7 +529,7 @@ void *fim (int tempo, struct eventos *evento) {
 
     /* heróis */
     for (int i = 0; i < N_HEROIS; i++) {
-        cjto_destroi(&w -> herois[i].habilidades);
+        cjto_destroi(w -> herois[i].habilidades);
     }
 
     free(w -> herois);
@@ -552,9 +562,9 @@ void *inicia_mundo(struct mundo *w, struct fprio_t *lef) {
     for (int i = 0; i < N_HEROIS; i++) {
         w -> herois[i].heroi_id = i;
         w -> herois[i].experiencia = 0;
-        w -> herois[i]. paciencia = rand () % (100 - 0 + 1) + 0;
-        w -> herois[i].velocidade = rand () % (5000 - 50 + 1) + 50;
-        w -> herois[i].habilidades = *cjto_aleat((rand () % (3 - 1 + 1) + 1), 10); 
+        w -> herois[i]. paciencia = aleat(0, 100);
+        w -> herois[i].velocidade = aleat(50, 5000);
+        w -> herois[i].habilidades = cjto_aleat(aleat(1,3), 10); 
         w -> herois[i].vivo = 1;
     }
 
@@ -563,9 +573,9 @@ void *inicia_mundo(struct mundo *w, struct fprio_t *lef) {
 
     for (int i = 0; i < N_BASES; i++) {
         w -> bases[i].base_id = i;
-        w -> bases[i].local.x = rand () % ((N_TAMANHO_MUNDO-1) - 0 + 1) + 0;
-        w -> bases[i].local.y = rand () % ((N_TAMANHO_MUNDO-1) - 0 + 1) + 0;
-        w -> bases[i].lotacao = rand () % (10 - 3 + 1) + 3;
+        w -> bases[i].local.x = aleat(0, N_TAMANHO_MUNDO-1);
+        w -> bases[i].local.y = aleat(0, N_TAMANHO_MUNDO-1);
+        w -> bases[i].lotacao = aleat(3, 10);
         w -> bases[i].presentes = cjto_cria(w -> bases[i].lotacao);
         w -> bases[i].espera = fila_cria();
         w -> bases[i].cont_espera = 0;
@@ -576,9 +586,10 @@ void *inicia_mundo(struct mundo *w, struct fprio_t *lef) {
 
     for (int i = 0; i < N_MISSOES; i++) {
         w -> missoes[i].missao_id = i;
-        w -> missoes[i].local.x = rand () % ((N_TAMANHO_MUNDO-1) - 0 + 1) + 0;
-        w -> missoes[i].local.y = rand () % ((N_TAMANHO_MUNDO-1) - 0 + 1) + 0;
-        w -> missoes[i].habilidades = cjto_aleat((rand () % (10 - 6 + 1) + 6), 10); 
+        w -> missoes[i].local.x = aleat(0, N_TAMANHO_MUNDO-1);
+        w -> missoes[i].local.y = aleat(0, N_TAMANHO_MUNDO-1);
+        int habs_aleat = aleat(6, 10);
+        w -> missoes[i].habilidades = cjto_aleat(habs_aleat, 10); 
         w -> missoes[i].tentativas = 0;
     }
 
@@ -590,8 +601,8 @@ void *inicia_mundo(struct mundo *w, struct fprio_t *lef) {
   /* agenda a chegada dos heróis na base */
 
     for (int i = 0; i < N_HEROIS; i++) {
-        int tempo = rand () % (4320 - 0 + 1) + 0;
-        int base_aleatoria = rand () % ((N_BASES - 1) - 0 + 1) + 0;
+        int tempo = aleat(0, 4320);
+        int base_aleatoria = aleat(0, N_BASES-1);
 
         struct eventos *evento_criado = cria_evento(tempo, TIPO_CHEGA, &w -> herois[i], &w -> bases[base_aleatoria], NULL, NULL, w);
         fprio_insere(lef, evento_criado, TIPO_CHEGA, tempo);
@@ -599,9 +610,9 @@ void *inicia_mundo(struct mundo *w, struct fprio_t *lef) {
 
   /* agenda as missões */
   for (int i = 0; i < N_MISSOES; i++) {
-    int tempo = rand () % (T_FIM_DO_MUNDO - 0 + 1) + 0;
+    int tempo = aleat(0, T_FIM_DO_MUNDO);
 
-    struct eventos *evento_criado = cria_evento(tempo, TIPO_MISSAO, NULL, NULL, NULL, w->missoes, w); 
+    struct eventos *evento_criado = cria_evento(tempo, TIPO_MISSAO, NULL, NULL, NULL, &w->missoes[i], w); 
     fprio_insere(lef, evento_criado, TIPO_MISSAO, tempo);
   }
 

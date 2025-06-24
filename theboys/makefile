@@ -21,7 +21,6 @@ $(MAIN): $(MAIN).o $(OBJ) conjunto.o
 $(MAIN).o: $(MAIN).c $(HDR)
 
 # construir os TADs
-libtheboys.o: libtheboys.c libtheboys.h
 fila.o: fila.c fila.h
 fprio.o: fprio.c fprio.h
 

@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "conjunto.h"
 #include "fila.h"
 #include "fprio.h"
@@ -17,6 +18,8 @@ int main ()
 {
   // declaração de variáveis 
   struct mundo w;
+
+  srand(time(NULL));
 
   /* inicialização da Lista de Eventos Futuros */
   struct fprio_t *lef = fprio_cria();

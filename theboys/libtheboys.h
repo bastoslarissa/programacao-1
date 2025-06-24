@@ -29,7 +29,7 @@ extern int N_COMPOSTOS_V;
 struct heroi 
 {
     int heroi_id;
-    struct cjto_t habilidades;
+    struct cjto_t *habilidades;
     int paciencia;
     int velocidade;
     int experiencia;
