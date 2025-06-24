@@ -347,7 +347,7 @@ void *missao (int tempo, struct eventos *evento) {
     for (int i = 0; i < base_mais_prox->presentes->cap; i++) {
         if (base_mais_prox->presentes->flag[i]) {
             for (int k = 0; k < w -> herois[i].habilidades.cap; k++) {
-                if (w->herois[i].habilidades.flag[k]) {
+                if (w -> herois[i].habilidades.flag[k]) {
                     cjto_insere(herois_xp, k);
                 }
             }
@@ -364,6 +364,7 @@ void *missao (int tempo, struct eventos *evento) {
         cjto_imprime(herois_xp);
         printf(" ]\n");
 
+        /* contador de quantidade de missões participadas por base */
         base_mais_prox->missoes++;
 
         /* incrementa a experiência dos heróis */
@@ -391,6 +392,10 @@ void *missao (int tempo, struct eventos *evento) {
                 cjto_imprime(herois_xp);
                 printf(" ]\n");
 
+                    cjto_destroi(inter_hab);
+                    cjto_destroi(uniao_xp); 
+
+                /* contador de quantidade de missões participadas por base */
                 base_mais_prox->missoes++;
 
             /* cria e insere na LEF o evento MORRE p/ o herói mais experiente */
@@ -415,8 +420,6 @@ void *missao (int tempo, struct eventos *evento) {
 
     cjto_destroi(todas_habilidades);
     cjto_destroi(herois_xp);
-    cjto_destroi(inter_hab);
-    cjto_destroi(uniao_xp); 
 
     return NULL;
 
@@ -450,7 +453,7 @@ void *fim (int tempo, struct eventos *evento) {
 
     /* relatório das bases */
     for (int i = 0; i < N_BASES; i++) {
-        printf("BASE %2d LOT %2d FILA MAX %2d MISSOES %d\n", w -> bases[i].base_id, w -> bases->lotacao, w -> bases->cont_espera, w -> bases -> missoes);
+        printf("BASE %2d LOT %2d FILA MAX %2d MISSOES %d\n", w -> bases[i].base_id, w -> bases->lotacao, w -> bases->cont_espera, w->bases->missoes);
     }
 
     /* relatório geral */
@@ -463,7 +466,7 @@ void *fim (int tempo, struct eventos *evento) {
     float sucesso = 0;
 
     for (int i = 0; i < N_BASES; i++) {
-        soma_missoes =+ w -> bases -> missoes; 
+        soma_missoes =+ w->bases->missoes; 
     }
 
     sucesso = ( ((float)soma_missoes / (float)N_MISSOES) * 100);
@@ -566,7 +569,6 @@ void *inicia_mundo(struct mundo *w, struct fprio_t *lef) {
         w -> bases[i].presentes = cjto_cria(w -> bases[i].lotacao);
         w -> bases[i].espera = fila_cria();
         w -> bases[i].cont_espera = 0;
-        w -> bases[i].missoes = 0;
     }
 
     /* inicialização de cada missão */
@@ -599,7 +601,7 @@ void *inicia_mundo(struct mundo *w, struct fprio_t *lef) {
   for (int i = 0; i < N_MISSOES; i++) {
     int tempo = rand () % (T_FIM_DO_MUNDO - 0 + 1) + 0;
 
-    struct eventos *evento_criado = cria_evento(tempo, TIPO_MISSAO, NULL, NULL, NULL, &w->missoes[i], w); 
+    struct eventos *evento_criado = cria_evento(tempo, TIPO_MISSAO, NULL, NULL, NULL, w->missoes, w); 
     fprio_insere(lef, evento_criado, TIPO_MISSAO, tempo);
   }
 
