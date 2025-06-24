@@ -25,40 +25,42 @@ int main ()
   inicia_mundo(&w, lef);
 
   /* laço de simulação */
-  while (lef -> prim != lef -> fim) {
+  
+      while (lef -> prim != lef -> fim) {
 
-    struct eventos *evento_atual = fprio_retira(lef, &lef -> prim -> tipo, &lef -> prim -> prio);
+      struct eventos *evento_atual = fprio_retira(lef, &lef -> prim -> tipo, &lef -> prim -> prio);
 
-    if (evento_atual -> tipo == TIPO_CHEGA) 
+      if (evento_atual -> tipo == TIPO_CHEGA) 
       chega(evento_atual->tempo, evento_atual);
 
-    else if (evento_atual -> tipo == TIPO_ESPERA)
-      espera(evento_atual -> tempo, evento_atual);
+      else if (evento_atual -> tipo == TIPO_ESPERA)
+        espera(evento_atual -> tempo, evento_atual);
 
-    else if (evento_atual -> tipo == TIPO_DESISTE)
-      desiste(evento_atual -> tempo, evento_atual);
+      else if (evento_atual -> tipo == TIPO_DESISTE)
+        desiste(evento_atual -> tempo, evento_atual);
 
-    else if (evento_atual -> tipo == TIPO_AVISA)
-      avisa(evento_atual -> tempo, evento_atual);
+      else if (evento_atual -> tipo == TIPO_AVISA)
+        avisa(evento_atual -> tempo, evento_atual);
 
-    else if (evento_atual -> tipo == TIPO_ENTRA)
-      entra(evento_atual -> tempo, evento_atual);
+      else if (evento_atual -> tipo == TIPO_ENTRA)
+        entra(evento_atual -> tempo, evento_atual);
 
-    else if (evento_atual -> tipo == TIPO_SAI)
-      sai(evento_atual -> tempo, evento_atual);
+      else if (evento_atual -> tipo == TIPO_SAI)
+        sai(evento_atual -> tempo, evento_atual);
 
-    else if (evento_atual -> tipo == TIPO_VIAJA)
-      viaja(evento_atual -> tempo, evento_atual);
+      else if (evento_atual -> tipo == TIPO_VIAJA)
+        viaja(evento_atual -> tempo, evento_atual);
 
-    else if (evento_atual -> tipo == TIPO_MORRE)
-      morre(evento_atual -> tempo, evento_atual);
+      else if (evento_atual -> tipo == TIPO_MORRE)
+        morre(evento_atual -> tempo, evento_atual);
 
-    else if (evento_atual -> tipo == TIPO_MISSAO)
-      missao(evento_atual -> tempo, evento_atual);
+      else if (evento_atual -> tipo == TIPO_MISSAO)
+        missao(evento_atual -> tempo, evento_atual);
 
-    else if (evento_atual -> tipo == TIPO_FIM) 
-      fim(evento_atual -> tempo, evento_atual); // destruir o mundo
-  }
+      else if (evento_atual -> tipo == TIPO_FIM) 
+        fim(evento_atual -> tempo, evento_atual); // destruir o mundo
+      }
+    
 
   return (0) ;
 }

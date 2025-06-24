@@ -4,7 +4,7 @@
 #include "conjunto.h"
 
 #define T_INICIO = 0
-#define T_FIM_DO_MUNDO 10
+#define T_FIM_DO_MUNDO 52600
 #define N_TAMANHO_MUNDO 20000
 #define N_HABILIDADES 10
 #define N_HEROIS (N_HABILIDADES * 5)
@@ -51,6 +51,7 @@ struct base
     struct fila_t *espera;
     struct coordenadas local;
     int cont_espera;
+    int missoes;
 };
 
 struct missao 
@@ -59,7 +60,6 @@ struct missao
     struct cjto_t *habilidades;
     struct coordenadas local;
     int tentativas;
-    int *cont_missoes;
 };
 
 struct eventos 
@@ -72,6 +72,7 @@ struct eventos
     struct mundo *w;
     struct missao *m;
     struct fprio_t *lef;
+    int contador;
 };
 
 struct mundo 
