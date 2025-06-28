@@ -582,7 +582,7 @@ void *inicia_mundo(struct mundo *w, struct fprio_t *lef) {
     }
 
     /* inicialização de cada missão */
-    w -> missoes = malloc (sizeof(missao) * N_MISSOES);
+    w -> missoes = malloc (sizeof(struct missao) * N_MISSOES);
 
     for (int i = 0; i < N_MISSOES; i++) {
         w -> missoes[i].missao_id = i;

@@ -8,7 +8,6 @@
 #include "fila.h"
 #include "fprio.h"
 #include "libtheboys.h"
-
 // variável global
 int N_COMPOSTOS_V = (N_HABILIDADES * 3);
 
@@ -18,6 +17,7 @@ int main ()
 {
   // declaração de variáveis 
   struct mundo w;
+  int relogio;
 
   srand(time(NULL));
 
@@ -28,10 +28,13 @@ int main ()
   inicia_mundo(&w, lef);
 
   /* laço de simulação */
-  
-      while (lef -> prim != lef -> fim) {
+
+  relogio = 0;
+
+  while (relogio != T_FIM_DO_MUNDO) { 
 
       struct eventos *evento_atual = fprio_retira(lef, &lef -> prim -> tipo, &lef -> prim -> prio);
+      relogio = evento_atual->tempo;
 
       if (evento_atual -> tipo == TIPO_CHEGA) 
       chega(evento_atual->tempo, evento_atual);
@@ -61,8 +64,9 @@ int main ()
         missao(evento_atual -> tempo, evento_atual);
 
       else if (evento_atual -> tipo == TIPO_FIM) 
-        fim(evento_atual -> tempo, evento_atual); // destruir o mundo
-      }
+        fim(evento_atual -> tempo, evento_atual); // destrói o mundo
+       
+  }
     
 
   return (0) ;
