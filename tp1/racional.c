@@ -139,23 +139,23 @@ void imprime_r (struct racional r) {
   eh_valido = valido_r(r);
 
   if (eh_valido == 0) {
-    printf("INVALIDO ");
+    printf("INVALIDO");
     return;
   }
   
   else if (num_r.num == 0)
-    printf("0 ");
+    printf("0");
        
 
   else if (num_r.den == 1)
-    printf("%ld ", num_r.num);
+    printf("%ld", num_r.num);
         
         
   else if (num_r.num == num_r.den)
-    printf("1 ");
+    printf("1");
          
   else 
-    printf("%ld/%ld ", num_r.num, num_r.den);
+    printf("%ld/%ld", num_r.num, num_r.den);
 
 } 
 

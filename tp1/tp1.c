@@ -37,7 +37,9 @@ int main () {
       r2 = sorteia_r(max * (-1), max);
 
       imprime_r(r1);
+      printf(" ");
       imprime_r(r2);
+      printf(" ");
 
       r_soma = soma_r(r1, r2);
       r_sub = subtrai_r(r1, r2);
@@ -48,9 +50,16 @@ int main () {
         return (1);
 
       imprime_r(r_soma);
+      printf(" ");
+
       imprime_r(r_sub);
+      printf(" ");
+
       imprime_r(r_multi);
+      printf(" ");
+
       imprime_r(r_div);
+      printf(" ");
 
       printf("\n");
     }
