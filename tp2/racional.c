@@ -114,7 +114,7 @@ void imprime_r(struct racional r)
 
   if (!valido_r(r))
   {
-    printf("Nan");
+    printf("NaN");
     return;
   }
 

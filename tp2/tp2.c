@@ -11,10 +11,58 @@
 
 #define SIZE 100
 
+int v_tam = 0;
+
 
 /* Funções auxiliares */
 
-/* Função que realiza a troca de dois elementos */
+/* Função que lê o vetor */
+struct racional le_vetor (int n, struct racional *v) {
+
+  for (int i = 0; i < n; i++) {
+    scanf("%ld", &v[i].num);
+    scanf("%ld", &v[i].den);
+  }
+
+  return *v;
+}
+
+/* Função que imprime o vetor */
+void imprime_vetor (int v_tam, struct racional *v) {
+
+  printf("\nVETOR = ");
+
+  for (int i = 0; i < v_tam; i++) {
+     imprime_r(v[i]);
+     printf(" ");
+  } 
+}
+
+/* Função que remove racionais inválidos do vetor */
+struct racional remove_invalidos (int n, struct racional *v) {
+
+  struct racional v_aux[SIZE];
+  int j = 0;
+  /* Elimina os racionais inválidos do vetor */
+  for (int i = 0; i < n; i++) {
+
+    if (valido_r(v[i])) {
+      v_aux[j].num = v[i].num;
+      v_aux[j].den = v[i].den;
+      j++;
+      v_tam++;
+    }  
+  }
+
+  /* atribui v_aux a v */
+  for (int i = 0; i < v_tam; i++) {
+    v[i] = v_aux[i];
+  }
+
+  return *v;
+}
+
+/* Função que ordena o vetor */
 void ordena (struct racional v_aux[], int tam) { 
     
     int i, j, min;
@@ -42,7 +90,7 @@ void ordena (struct racional v_aux[], int tam) {
 int main () {
 
   /* Declaração de variáveis */
-  struct racional v[SIZE], v_aux[SIZE];
+  struct racional v[SIZE];
   struct racional soma;
   soma.num = 0;
   soma.den = 1;
@@ -50,54 +98,28 @@ int main () {
   struct racional *r3 = &soma;
   r3 -> num = 0;
   r3 -> den = 1;
-  int n, i, j = 0, m = 0;
+  int n, i;
 
-  scanf("%d", &n);
+  scanf("%d", &n); // lê inteiro n
 
-  /*Preenche o vetor com n números racionais lidos da entrada */
-  for (i = 0; i < n; i++) {
-    scanf("%ld", &v[i].num);
-    scanf("%ld", &v[i].den);
-  }
+  le_vetor(n, v); // lê vetor de tamanho n
 
   /* Imprime o conteúdo do vetor lido */
-  printf("VETOR = ");
-  for (i = 0; i < n; i++) {
-     imprime_r(v[i]);
-     printf(" ");
-  }
+  imprime_vetor(n, v);
 
-  /* Elimina os racionais inválidos do vetor */
-  for (i = 0; i < n; i++) {
-
-    if (valido_r(v[i])) {
-      v_aux[j].num = v[i].num;
-      v_aux[j].den = v[i].den;
-      j++;
-      m++;
-    }  
-  }
+  remove_invalidos(n, v);
   
   /* Imprime o conteúdo do vetor sem racionais inválidos */
-  printf("\nVETOR = ");
-  for (i = 0; i < m; i++) {
-     imprime_r(v_aux[i]);
-     printf(" ");
-  }
+  imprime_vetor(v_tam, v);
 
-  /* Ordena o vetor */
-  ordena(v_aux, m);
+  ordena(v, v_tam); //ordena o vetor
 
   /* Imprime o vetor ordenado */
-  printf("\nVETOR = ");
-  for (i = 0; i < m; i++) {
-     imprime_r(v_aux[i]);
-     printf(" ");
-  }
+  imprime_vetor(v_tam, v);
 
   /* Calcula a soma dos elementos do vetor */
-  for (i = 0; i < m; i++) {
-    soma_r(soma, v_aux[i], &soma_aux);
+  for (i = 0; i < v_tam; i++) {
+    soma_r(soma, v[i], &soma_aux);
     soma = soma_aux;
   }
 
