@@ -11,9 +11,6 @@
 
 #define SIZE 100
 
-int v_tam = 0;
-
-
 /* Funções auxiliares */
 
 /* Função que lê o vetor */
@@ -39,10 +36,11 @@ void imprime_vetor (int v_tam, struct racional *v) {
 }
 
 /* Função que remove racionais inválidos do vetor */
-struct racional remove_invalidos (int n, struct racional *v) {
+struct racional remove_invalidos (int n, struct racional *v, int *v_tam) {
 
   struct racional v_aux[SIZE];
   int j = 0;
+  
   /* Elimina os racionais inválidos do vetor */
   for (int i = 0; i < n; i++) {
 
@@ -50,14 +48,16 @@ struct racional remove_invalidos (int n, struct racional *v) {
       v_aux[j].num = v[i].num;
       v_aux[j].den = v[i].den;
       j++;
-      v_tam++;
+      (*v_tam)++;
     }  
   }
 
   /* atribui v_aux a v */
-  for (int i = 0; i < v_tam; i++) {
+  for (int i = 0; i < *v_tam; i++) {
     v[i] = v_aux[i];
   }
+ 
+
 
   return *v;
 }
@@ -92,6 +92,7 @@ int main () {
   /* Declaração de variáveis */
   struct racional v[SIZE];
   struct racional soma;
+  int v_tam = 0;
   soma.num = 0;
   soma.den = 1;
   struct racional soma_aux;
@@ -107,8 +108,8 @@ int main () {
   /* Imprime o conteúdo do vetor lido */
   imprime_vetor(n, v);
 
-  remove_invalidos(n, v);
-  
+  remove_invalidos(n, v, &v_tam);
+    
   /* Imprime o conteúdo do vetor sem racionais inválidos */
   imprime_vetor(v_tam, v);
 
