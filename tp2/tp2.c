@@ -41,7 +41,7 @@ struct racional remove_invalidos (int n, struct racional *v, int *v_tam) {
   struct racional v_aux[SIZE];
   int j = 0;
   
-  /* Elimina os racionais inválidos do vetor */
+  // verifica se o racional é válido, se sim, adiciona ele em um vetor auxiliar
   for (int i = 0; i < n; i++) {
 
     if (valido_r(v[i])) {
@@ -52,18 +52,16 @@ struct racional remove_invalidos (int n, struct racional *v, int *v_tam) {
     }  
   }
 
-  /* atribui v_aux a v */
+  //atribui o vetor auxiliar ao vetor principal
   for (int i = 0; i < *v_tam; i++) {
     v[i] = v_aux[i];
   }
- 
-
 
   return *v;
 }
 
-/* Função que ordena o vetor */
-void ordena (struct racional v_aux[], int tam) { 
+/* Função que ordena o vetor através do algoritmo Selection Sort */
+void ordena_vetor (struct racional v_aux[], int tam) { 
     
     int i, j, min;
     struct racional aux;
@@ -86,13 +84,13 @@ void ordena (struct racional v_aux[], int tam) {
 
 
 
-/* programa principal */
+/* Programa principal */
 int main () {
 
-  /* Declaração de variáveis */
+  // declaração de variáveis 
   struct racional v[SIZE];
-  struct racional soma;
   int v_tam = 0;
+  struct racional soma;
   soma.num = 0;
   soma.den = 1;
   struct racional soma_aux;
@@ -105,25 +103,23 @@ int main () {
 
   le_vetor(n, v); // lê vetor de tamanho n
 
-  /* Imprime o conteúdo do vetor lido */
-  imprime_vetor(n, v);
+  imprime_vetor(n, v); // imprime conteúdo do vetor lido
 
-  remove_invalidos(n, v, &v_tam);
+  remove_invalidos(n, v, &v_tam); 
     
-  /* Imprime o conteúdo do vetor sem racionais inválidos */
-  imprime_vetor(v_tam, v);
+  imprime_vetor(v_tam, v); // imprime o conteúdo do vetor sem os racionais inválidos
 
-  ordena(v, v_tam); //ordena o vetor
+  ordena_vetor(v, v_tam);
 
-  /* Imprime o vetor ordenado */
-  imprime_vetor(v_tam, v);
+  imprime_vetor(v_tam, v); // imprime o vetor ordenado
 
-  /* Calcula a soma dos elementos do vetor */
+  // calcula a soma dos racionais do vetor 
   for (i = 0; i < v_tam; i++) {
     soma_r(soma, v[i], &soma_aux);
     soma = soma_aux;
   }
 
+  // imprime a soma dos racionais do vetor
   printf("\nSOMA = ");
   imprime_r(*r3);
   printf("\n");
