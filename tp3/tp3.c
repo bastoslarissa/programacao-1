@@ -13,10 +13,18 @@
 /* programa principal */
 int main ()
 {
-  struct racional num_r;
+  struct racional *num_r;
 
-cria_r(2,3);
-printf("%ld/%ld", num_r.num, num_r.den);
+num_r = cria_r(2,3);
+printf("%ld/%ld \n", num_r -> num, num_r -> den);
+
+if (valido_r(num_r)) {
+  printf("válido \n");
+}
+
+destroi_r(num_r);
+
+printf("%ld/%ld \n", num_r -> num, num_r -> den);
 
   return (0) ;
 }

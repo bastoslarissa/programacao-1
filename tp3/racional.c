@@ -19,20 +19,39 @@
  * por esta função. Retorna NULL se não conseguiu alocar a memória. */
 struct racional *cria_r (long numerador, long denominador) {
   
-    struct racional num_r;
+  // aloca memória
+  struct racional *num_r = malloc (sizeof(struct racional));
 
-  num_r.num = numerador;
-  num_r.den = denominador;
+  // verifica se a memória foi alocada
+  if (!num_r)
+    return NULL;
 
-  return (&num_r);
+  // inicializa numerador e denominador
+  num_r -> num = numerador;
+  num_r -> den = denominador;
+
+  return (num_r);
+
 }
 
 /* Libera a memória alocada para o racional apontado por r */
-void destroi_r (struct racional *r);
+void destroi_r (struct racional *r) {
+
+  free(r);
+
+}
 
 /* Retorna 1 se o racional r for válido ou 0 se for inválido. Um racional
  * é inválido se o denominador for zero ou se ele não tiver sido alocado. */
-int valido_r (struct racional *r);
+int valido_r (struct racional *r) {
+
+  // verfica se o racional foi alocado
+  if (!r || r -> den == 0)
+    return 0;
+  
+  return 1;
+
+}
 
 /* Imprime um racional r, respeitando estas regras:
    - o racional deve estar na forma simplificada;
@@ -45,7 +64,14 @@ int valido_r (struct racional *r);
      - se o numerador e denominador forem iguais, imprime somente "1";
      - se o racional for negativo, o sinal é impresso antes do número;
      - se numerador e denominador forem negativos, o racional é positivo. */
-void imprime_r (struct racional *r);
+/* void imprime_r (struct racional *r) {
+
+  simplifica_r(r);
+
+  //verifica se o racional é valido
+  if (!r)
+    return NULL;
+} */
 
 /* Compara dois números racionais r1 e r2.
  * Retorna -2 se r1 ou r2 for inválido ou se o respectivo ponteiro for nulo.
@@ -53,46 +79,46 @@ void imprime_r (struct racional *r);
  * Atenção: faça a comparação normalizando os denominadores pelo MMC.
  * Fazer a comparação baseado na divisão do numerador pelo denominador
  * pode gerar erro de arredondamento e falsear o resultado. */
-int compara_r (struct racional *r1, struct racional *r2);
+//int compara_r (struct racional *r1, struct racional *r2);
 
 /* Coloca em *r3 a soma simplificada dos racionais *r1 e *r2.
  * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
-int soma_r (struct racional *r1, struct racional *r2, struct racional *r3);
+//int soma_r (struct racional *r1, struct racional *r2, struct racional *r3);
 
 /* Coloca em *r3 a diferença simplificada dos racionais *r1 e *r2.
  * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
-int subtrai_r (struct racional *r1, struct racional *r2, struct racional *r3);
+//int subtrai_r (struct racional *r1, struct racional *r2, struct racional *r3);
 
 /* Coloca em *r3 o produto simplificado dos racionais *r1 e *r2.
  * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
-int multiplica_r (struct racional *r1, struct racional *r2, struct racional *r3);
+//int multiplica_r (struct racional *r1, struct racional *r2, struct racional *r3);
 
 /* Coloca em *r3 a divisão simplificada do racional *r1 por *r2.
  * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
-int divide_r (struct racional *r1, struct racional *r2, struct racional *r3);
+//int divide_r (struct racional *r1, struct racional *r2, struct racional *r3);
 
 /* Maximo Divisor Comum entre a e b      */
 /* calcula o mdc pelo metodo de Euclides */
-long mdc (long a, long b)
-{
+// long mdc (long a, long b)
+//{
   /* implemente aqui */
-}
+//} 
 
 /* Minimo Multiplo Comum entre a e b */
 /* mmc = (a * b) / mdc (a, b)        */
-long mmc (long a, long b)
-{
+// long mmc (long a, long b)
+//{
   /* implemente aqui */
-}
+//}
 
 /* Simplifica o número racional indicado no parâmetro.
  * Por exemplo, se o número for 10/8 muda para 5/4.
  * Retorna 1 em sucesso e 0 se r for inválido ou o ponteiro for nulo.
  * Se ambos numerador e denominador forem negativos, o resultado é positivo.
  * Se o denominador for negativo, o sinal deve migrar para o numerador. */
-int simplifica_r (struct racional *r)
-{
+//int simplifica_r (struct racional *r)
+//{
   /* implemente aqui */
-}
+//}
 
 /* implemente as demais funções de racional.h aqui */
