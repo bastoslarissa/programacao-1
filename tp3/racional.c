@@ -8,10 +8,60 @@
  * funções auxiliares para facilitar a implementação daquelas funções.
 */
 
-/* coloque aqui seus includes (primeiro os <...>, depois os "...") */
 #include <stdio.h>
 #include <stdlib.h>
 #include "racional.h"
+
+/* Maximo Divisor Comum entre a e b      */
+/* calcula o mdc pelo metodo de Euclides */
+/*  long mdc (long a, long b) {
+
+  if (b == 0)
+    return a;
+  else
+    return mdc(b, a % b);
+  }  */
+
+/* Minimo Multiplo Comum entre a e b */
+/* mmc = (a * b) / mdc (a, b)        */
+/*  long mmc (long a, long b) {
+
+  int resultado_mmc = (a *b) / mdc(a,b);
+
+  return resultado_mmc;
+} */
+
+/* Simplifica o número racional indicado no parâmetro.
+ * Por exemplo, se o número for 10/8 muda para 5/4.
+ * Retorna 1 em sucesso e 0 se r for inválido ou o ponteiro for nulo.
+ * Se ambos numerador e denominador forem negativos, o resultado é positivo.
+ * Se o denominador for negativo, o sinal deve migrar para o numerador. */
+/* int simplifica_r (struct racional *r) 
+{
+  
+  // verifica se o racional é válido
+  if ( !r || (!valido_r(r)) )
+    return 0;
+
+  // simplifica o número racional 
+  r -> num = r -> num / mdc(r -> num, r -> den);
+  r -> den = r -> den / mdc(r -> num, r -> den);
+
+  // se ambos numerador e denominador são negativos, muda o sinal
+  if ((r -> num  < 0) && (r -> den < 0)) {
+    r -> num = (r -> num) * (-1);
+    r -> den = (r -> den) * (-1);
+  }
+
+  //se o denominador for negativo o sinal migra pro numerador
+  else if ((r -> den < 0) && (r -> num > 0)) {
+    r -> num = (r -> num ) * (-1);
+    r -> den = (r -> den) * (-1);
+  }
+
+  return 1;
+  
+} */
 
 /* Cria um número racional com o numerador e denominador indicados
  * e retorna um ponteiro que aponta para ele.
@@ -71,6 +121,8 @@ int valido_r (struct racional *r) {
   //verifica se o racional é valido
   if (!r)
     return NULL;
+
+  
 } */
 
 /* Compara dois números racionais r1 e r2.
@@ -97,28 +149,3 @@ int valido_r (struct racional *r) {
  * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
 //int divide_r (struct racional *r1, struct racional *r2, struct racional *r3);
 
-/* Maximo Divisor Comum entre a e b      */
-/* calcula o mdc pelo metodo de Euclides */
-// long mdc (long a, long b)
-//{
-  /* implemente aqui */
-//} 
-
-/* Minimo Multiplo Comum entre a e b */
-/* mmc = (a * b) / mdc (a, b)        */
-// long mmc (long a, long b)
-//{
-  /* implemente aqui */
-//}
-
-/* Simplifica o número racional indicado no parâmetro.
- * Por exemplo, se o número for 10/8 muda para 5/4.
- * Retorna 1 em sucesso e 0 se r for inválido ou o ponteiro for nulo.
- * Se ambos numerador e denominador forem negativos, o resultado é positivo.
- * Se o denominador for negativo, o sinal deve migrar para o numerador. */
-//int simplifica_r (struct racional *r)
-//{
-  /* implemente aqui */
-//}
-
-/* implemente as demais funções de racional.h aqui */
