@@ -14,29 +14,29 @@
 
 /* Maximo Divisor Comum entre a e b      */
 /* calcula o mdc pelo metodo de Euclides */
-/*  long mdc (long a, long b) {
+long mdc (long a, long b) {
 
   if (b == 0)
     return a;
   else
     return mdc(b, a % b);
-  }  */
+}  
 
 /* Minimo Multiplo Comum entre a e b */
 /* mmc = (a * b) / mdc (a, b)        */
-/*  long mmc (long a, long b) {
+long mmc (long a, long b) {
 
   int resultado_mmc = (a *b) / mdc(a,b);
 
   return resultado_mmc;
-} */
+} 
 
 /* Simplifica o número racional indicado no parâmetro.
  * Por exemplo, se o número for 10/8 muda para 5/4.
  * Retorna 1 em sucesso e 0 se r for inválido ou o ponteiro for nulo.
  * Se ambos numerador e denominador forem negativos, o resultado é positivo.
  * Se o denominador for negativo, o sinal deve migrar para o numerador. */
-/* int simplifica_r (struct racional *r) 
+int simplifica_r (struct racional *r) 
 {
   
   // verifica se o racional é válido
@@ -44,8 +44,9 @@
     return 0;
 
   // simplifica o número racional 
-  r -> num = r -> num / mdc(r -> num, r -> den);
-  r -> den = r -> den / mdc(r -> num, r -> den);
+  int mdc_result = mdc(r -> num, r -> den);
+  r -> num = r -> num / mdc_result ;
+  r -> den = r -> den / mdc_result;
 
   // se ambos numerador e denominador são negativos, muda o sinal
   if ((r -> num  < 0) && (r -> den < 0)) {
@@ -61,7 +62,7 @@
 
   return 1;
   
-} */
+} 
 
 /* Cria um número racional com o numerador e denominador indicados
  * e retorna um ponteiro que aponta para ele.
@@ -103,35 +104,74 @@ int valido_r (struct racional *r) {
 
 }
 
-/* Imprime um racional r, respeitando estas regras:
-   - o racional deve estar na forma simplificada;
-   - não use espacos em branco e não mude de linha;
-   - o formato de saída deve ser "num/den", a menos dos casos abaixo;
-     - se o ponteiro for nulo, imprime a mensagem "NULL";
-     - se o racional for inválido, imprime a mensagem "NaN" (Not a Number);
-     - se o numerador for 0, imprime somente "0";
-     - se o denominador for 1, imprime somente o numerador;
-     - se o numerador e denominador forem iguais, imprime somente "1";
-     - se o racional for negativo, o sinal é impresso antes do número;
-     - se numerador e denominador forem negativos, o racional é positivo. */
-/* void imprime_r (struct racional *r) {
+/* Imprime um racional r 
+ * O formato de saída é num/den sem espaços e sem pular linha, exceto em alguns casos */
+void imprime_r (struct racional *r) {
 
+  // verifica se o racional é valido, se não, imprime "NULL"
+  if (!r)
+    printf("NULL");
+  
+  // simplifica o racional
   simplifica_r(r);
 
-  //verifica se o racional é valido
-  if (!r)
-    return NULL;
+  // se o racional for inválido, imprime a mensagem "NaN (Not a Number)"
+  if (!valido_r(r))
+    printf("NaN");
 
+  // se o numerador for 0, imprime somente "0"
+  else if (r -> num == 0)
+    printf("0");
   
-} */
+  // se o denominador for 1, imprime somente o numerador
+  else if (r -> den == 1)
+    printf("%ld", r -> num);
+
+  // se o numerador e o denominador forem iguais, imprime somente "1"
+  else if (r -> num == r -> den)
+    printf("1");
+
+  // se o racional for negativo, o sinal é impresso antes do número
+  // se numerador e denominador forem negativos, o racional é positivo */
+  else 
+    printf("%ld/%ld", r -> num, r -> den);
+} 
 
 /* Compara dois números racionais r1 e r2.
  * Retorna -2 se r1 ou r2 for inválido ou se o respectivo ponteiro for nulo.
  * Retorna -1 se r1 < r2; 0 se r1 = r2; 1 se r1 > r2.
- * Atenção: faça a comparação normalizando os denominadores pelo MMC.
- * Fazer a comparação baseado na divisão do numerador pelo denominador
- * pode gerar erro de arredondamento e falsear o resultado. */
-//int compara_r (struct racional *r1, struct racional *r2);
+ * Atenção: faça a comparação normalizando os denominadores pelo MMC. */
+int compara_r (struct racional *r1, struct racional *r2) {
+
+  //retorna -2 se r1 ou r2 for inválido 
+  if ((!r1 || !r2) || (!valido_r(r1) || (!valido_r(r2))))
+    return -2;
+
+  // igua-la as bases dos racionais 
+  simplifica_r(r1);
+  simplifica_r(r2);
+
+    // multiplica numeradores e denominadores cruzado
+    r1 -> num = (r1 -> num) * (r2 -> den);
+    r2 -> num = (r2 -> num) * (r1 -> den);
+
+    // muliplica os denominadores 
+    r1 -> den = (r1 -> den) * (r2 -> den);
+    r2 -> den = r1 -> den; 
+
+  // retorna -1 se r1 < r2
+  if (r1 -> num < r2 -> num) 
+    return -1;
+  
+  // retorna 0 se r1 = r2
+  else if (r1 -> num == r2 -> num)
+    return 0;
+  
+  // retorna 1 se r1 > r2
+  else 
+    return 1;
+
+}
 
 /* Coloca em *r3 a soma simplificada dos racionais *r1 e *r2.
  * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
