@@ -6,29 +6,47 @@
 
 /* coloque aqui seus includes (primeiro os <...>, depois os "...") */
 #include <stdio.h>
+#include <stdlib.h>
 #include "racional.h"
 
 /* programa principal */
-int main ()
-{
-  struct racional *num_r;
+int main () {
 
-num_r = cria_r(2,3);
-printf("%ld/%ld \n", num_r -> num, num_r -> den);
+  int n;
 
-if (valido_r(num_r)) {
-  printf("válido \n");
-}
+  // lê um valor n tal que 0 < n < 100
+  do 
+    scanf("%d", &n);
+  while (n < 0 && n > 100);
 
-destroi_r(num_r);
+  // aloca um vetor de tamanho n
+  struct racional *vetor = malloc(n * sizeof(struct racional)); 
 
-printf("%ld/%ld \n", num_r -> num, num_r -> den);
+  // preenche o vetor com n racionais lidos da entrada
+  for (int i = 0; i < n; i++) {
+    scanf("%ld", &vetor[i].num);
+    scanf("%ld", &vetor[i].den);
+  }
 
-struct racional *num_r2 = cria_r(7, 8);
-struct racional *num_r3 = cria_r(0, 1);
+  // imprime o vetor lido
+  printf("VETOR = ");
+  for (int i = 0; i < n; i++) {
+    imprime_r(&vetor[i]);
+    printf(" ");
+  }
 
-divide_r(num_r2, num_r3, num_r);
-imprime_r(num_r);
+  // elimina os racionais inválidos do vetor
+  for (int i = 0; i < n; i++) {
+    if (!valido_r(&vetor[i]))
+      destroi_r(&vetor[i]);
+  }
+
+  // imprime o vetor sem inválidos
+  printf("\nVETOR = ");
+  for (int i = 0; i < n; i++) {
+    imprime_r(&vetor[i]);
+    printf(" ");
+  }
 
 return (0) ;
 }
