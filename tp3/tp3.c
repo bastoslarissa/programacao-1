@@ -24,20 +24,11 @@ destroi_r(num_r);
 
 printf("%ld/%ld \n", num_r -> num, num_r -> den);
 
-struct racional *num_r2 = cria_r(10, 15);
-struct racional *num_r3 = cria_r(2, 0);
+struct racional *num_r2 = cria_r(7, 8);
+struct racional *num_r3 = cria_r(0, 1);
 
-imprime_r(num_r2);
-printf("\n");
-
-if (compara_r(num_r2, num_r3) == -2)
-  printf("invalido\n");
-else if (compara_r(num_r2, num_r3) == -1)
-  printf("r1 < r2\n");
-else if (compara_r(num_r2, num_r3) == 0)
-  printf("r1 = r2\n");
-else if (compara_r(num_r2, num_r3) == 1)
-  printf("r1 > r2\n");
+divide_r(num_r2, num_r3, num_r);
+imprime_r(num_r);
 
 return (0) ;
 }

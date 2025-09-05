@@ -175,17 +175,46 @@ int compara_r (struct racional *r1, struct racional *r2) {
 
 /* Coloca em *r3 a soma simplificada dos racionais *r1 e *r2.
  * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
-//int soma_r (struct racional *r1, struct racional *r2, struct racional *r3);
+int soma_r (struct racional *r1, struct racional *r2, struct racional *r3) {
 
-/* Coloca em *r3 a diferença simplificada dos racionais *r1 e *r2.
- * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
-//int subtrai_r (struct racional *r1, struct racional *r2, struct racional *r3);
+  // verifica se os racionais são nulos ou inválidos
+  if ( (!r1 || !r2 || !r3) || !valido_r(r1) || !valido_r(r2) || !valido_r(r3) )
+    return 0;
+
+  // soma os racionais
+  r3 -> num = ( (r1 -> num) * (r2 -> den) ) + ( (r2 -> num) * (r1 -> den)); // multiplica numeradores e denominadores cruzados
+  r3 -> den = (r1 -> den) * (r2 -> den); // multiplica os denominadores
+  
+  return 1;
+}
 
 /* Coloca em *r3 o produto simplificado dos racionais *r1 e *r2.
  * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
-//int multiplica_r (struct racional *r1, struct racional *r2, struct racional *r3);
+int multiplica_r (struct racional *r1, struct racional *r2, struct racional *r3) {
+  
+  // verifica se os racionais são nulos ou inválidos
+  if ( (!r1 || !r2 || !r3) || !valido_r(r1) || !valido_r(r2) || !valido_r(r3) )
+    return 0;
+
+  // multiplica os racionais 
+  r3 -> num = ( (r1 -> num) * (r2 -> num) ); // multiplica numeradores
+  r3 -> den = ( (r1 -> den) * (r2 -> den) ); // multiplica denominadores
+
+  return 1;
+}
 
 /* Coloca em *r3 a divisão simplificada do racional *r1 por *r2.
  * Retorna 1 em sucesso e 0 se r1 ou r2 for inválido ou um ponteiro for nulo. */
-//int divide_r (struct racional *r1, struct racional *r2, struct racional *r3);
+int divide_r (struct racional *r1, struct racional *r2, struct racional *r3) {
+
+  // verifica se os racionais são nulos ou inválidos
+  if ( (!r1 || !r2 || !r3) || !valido_r(r1) || !valido_r(r2) || !valido_r(r3) )
+    return 0;
+  
+  // divide os racionais multiplicando cruzado
+  r3 -> num = ( (r1 -> num) * (r2 -> den) );
+  r3 -> den = ( (r2 -> num) * (r1 -> den) );
+
+  return 1;
+}
 
