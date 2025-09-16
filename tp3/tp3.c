@@ -34,21 +34,24 @@ void imprime_vetor (int tam, struct racional *v) {
 
 struct racional remove_invalidos (int tam, struct racional *v, int v_tam) {
 
-  // elimina os racionais inválidos do vetor
+  struct racional *aux; 
+
   for (int i = 0; i < tam; i++) {
-    if (!(valido_r(&v[i]))) {
-      destroi_r(&v[i]);
-      v_tam = tam--;
+
+    if (!valido_r(&v[i])) {
+
+      for (int j = tam; j <= tam; j--) {
+
+        if (valido_r(&v[j]))
+        *aux = v[i];
+        v[i] = v[j]; 
+        v[j] = *aux;
+      }
     }
   }
-
-  return *v;
 }
 
-void ordena_racionais (struct racional *v, int tam) {
 
-  
-}
 
 
 /* programa principal */
