@@ -13,9 +13,22 @@
 #include <stdlib.h>
 #include "racional.h"
 
+/* Retorna o numerador do racional r */
+long numerador_r (struct racional r) {
+
+  return r.num;
+
+}
+
+/* Retorna o denominador do racional r */
+long denominador_r (struct racional r) {
+
+  return r.den;
+  
+}
+
 /* retorna um número aleatório entre min e max, inclusive. */
-long aleat(long min, long max)
-{
+long aleat(long min, long max) {
 
   long aleatorio = rand() % (max - min + 1) + min;
 
@@ -24,8 +37,7 @@ long aleat(long min, long max)
 
 /* Máximo Divisor Comum entre a e b      */
 /* calcula o MDC pelo método de Euclides */
-long mdc(long a, long b)
-{
+long mdc(long a, long b) {
 
   if (b == 0)
     return a;
@@ -34,8 +46,7 @@ long mdc(long a, long b)
 }
 
 /* Mínimo Múltiplo Comum entre a e b */
-long mmc(long a, long b)
-{
+long mmc(long a, long b) {
 
   int mmc_res = (a * b) / mdc(a, b);
 
@@ -43,8 +54,7 @@ long mmc(long a, long b)
 }
 
 // Recebe um número racional e o simplifica.
-struct racional simplifica_r(struct racional r)
-{
+struct racional simplifica_r(struct racional r) {
   long num_simplificado;
   long den_simplificado;
   struct racional num_r = r;
@@ -76,8 +86,7 @@ struct racional simplifica_r(struct racional r)
 }
 
 /* Cria um número racional com o numerador e denominador indicados. */
-struct racional cria_r(long numerador, long denominador)
-{
+struct racional cria_r(long numerador, long denominador) {
   struct racional num_r;
 
   num_r.num = numerador;
@@ -87,8 +96,7 @@ struct racional cria_r(long numerador, long denominador)
 }
 
 /* Retorna 1 se o racional r for válido ou 0 se for inválido. */
-int valido_r(struct racional r)
-{
+int valido_r(struct racional r) {
 
   if ((r.den) == 0)
     return (0);
@@ -97,8 +105,7 @@ int valido_r(struct racional r)
 }
 
 /* Retorna um número racional aleatório na forma simplificada. */
-struct racional sorteia_r(long min, long max)
-{
+struct racional sorteia_r(long min, long max) {
 
   struct racional r;
 
@@ -109,8 +116,7 @@ struct racional sorteia_r(long min, long max)
 }
 
 /* Imprime um racional r, respeitando estas regras: */
-void imprime_r(struct racional r)
-{
+void imprime_r(struct racional r) {
 
   if (!valido_r(r))
   {
@@ -135,8 +141,7 @@ void imprime_r(struct racional r)
 
 /* Compara dois racionais r1 e r2. Retorno: -2 se r1 ou r2 for inválido,
  * -1 se r1 < r2, 0 se r1 = r2 ou 1 se r1 > r2 */
-int compara_r(struct racional r1, struct racional r2)
-{
+int compara_r(struct racional r1, struct racional r2) {
 
   if (!valido_r(r1) || !valido_r(r2))
     return (-2);
@@ -151,8 +156,7 @@ int compara_r(struct racional r1, struct racional r2)
 }
 
 /* Retorna a soma dos racionais r1 e r2 no parametro *r3. */
-int soma_r(struct racional r1, struct racional r2, struct racional *r3)
-{
+int soma_r(struct racional r1, struct racional r2, struct racional *r3) {
 
   if ((!valido_r(r1) || !valido_r(r2)) || (r3 == NULL))
     return (0);
@@ -175,8 +179,7 @@ int soma_r(struct racional r1, struct racional r2, struct racional *r3)
 }
 
 /* Retorna a subtracao dos racionais r1 e r2 no parametro *r3. */
-int subtrai_r(struct racional r1, struct racional r2, struct racional *r3)
-{
+int subtrai_r(struct racional r1, struct racional r2, struct racional *r3) {
 
   if ((!valido_r(r1) || !valido_r(r2)) || (r3 == NULL))
     return (0);
@@ -197,8 +200,7 @@ int subtrai_r(struct racional r1, struct racional r2, struct racional *r3)
 }
 
 /* Retorna a multiplicacao dos racionais r1 e r2 no parametro *r3. */
-int multiplica_r(struct racional r1, struct racional r2, struct racional *r3)
-{
+int multiplica_r(struct racional r1, struct racional r2, struct racional *r3) {
 
   if ((!valido_r(r1) || !valido_r(r2)) || (r3 == NULL))
     return (0);
@@ -212,8 +214,7 @@ int multiplica_r(struct racional r1, struct racional r2, struct racional *r3)
 /* Retorna a divisao dos racionais r1 e r2 no parametro *r3.
  * Retorna 1 se a operacao foi bem sucedida ou
  *         0 se r1 ou r2 for inválido ou se *r3 for nulo */
-int divide_r(struct racional r1, struct racional r2, struct racional *r3)
-{
+int divide_r(struct racional r1, struct racional r2, struct racional *r3) {
 
   r3->num = (r1.num * r2.den);
   r3->den = (r1.den * r2.num);
