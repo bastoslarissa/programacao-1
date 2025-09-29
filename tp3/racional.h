@@ -2,6 +2,7 @@
  * Tipos Abstratos de Dados - TADs
  * Arquivo de header para TAD racional.
  * Feito em 24/09/2024 para a disciplina CI1001 - Programação 1.
+ * Atualizado em 09/09/2025 para a disciplina CI1001 - Programação 1.
  *
  * Este arquivo contém os tipos de dados e protótipos das funções necessárias
  * para definir e manipular números racionais.
@@ -12,11 +13,16 @@
 #ifndef RACIONAL
 #define RACIONAL
 
-/* estrutura que representa um número racional */
-struct racional {
-  long num;          /* numerador   */
-  long den;          /* denominador */
-};
+/* estrutura "opaca" que representa um número racional */
+/* serve para abstrair totalmente o tipo struct racional para o usuario */
+/* a struct de fato eh implementada no arquivo racional.c */
+struct racional;
+
+/* Retorna o numerador do racional r */
+long numerador_r (struct racional *r);
+
+/* Retorna o denominador do racional r */
+long denominador_r (struct racional *r);
 
 /* Cria um número racional com o numerador e denominador indicados
  * e retorna um ponteiro que aponta para ele.
@@ -25,7 +31,7 @@ struct racional {
 struct racional *cria_r (long numerador, long denominador);
 
 /* Libera a memória alocada para o racional apontado por r */
-void destroi_r (struct racional *r);
+void destroi_r (struct racional **r);
 
 /* Retorna 1 se o racional r for válido ou 0 se for inválido. Um racional
  * é inválido se o denominador for zero ou se ele não tiver sido alocado. */

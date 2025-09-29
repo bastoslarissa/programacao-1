@@ -2,6 +2,7 @@
  * Tipos Abstratos de Dados - TADs
  * Arquivo de implementação para TAD racional.
  * Feito em 20/09/2024 para a disciplina CI1001 - Programação 1.
+ * Atualizado em 09/09/2025 para a disciplina CI1001 - Programação 1.
  *
  * Este arquivo deve conter as implementações das funções cujos protótipos
  * foram definidos em racional.h. Neste arquivo também podem ser definidas
@@ -11,6 +12,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "racional.h"
+
+/* aqui vem a struct racional propriamente dita, nao modifique! */
+struct racional {
+  long num;          /* numerador   */
+  long den;          /* denominador */
+};
+
+/* Retorna o numerador do racional r */
+long numerador_r (struct racional *r) {
+
+  if (!r)
+  return 0;
+
+  return r -> num;
+
+}
+
+/* Retorna o denominador do racional r */
+long denominador_r (struct racional *r) {
+
+  if (!r)
+    return 0;
+    
+  return r -> den;
+
+}
 
 /* Maximo Divisor Comum entre a e b      */
 /* calcula o mdc pelo metodo de Euclides */
@@ -86,9 +113,10 @@ struct racional *cria_r (long numerador, long denominador) {
 }
 
 /* Libera a memória alocada para o racional apontado por r */
-void destroi_r (struct racional *r) {
+void destroi_r (struct racional **r) {
 
-  free(r);
+  free(*r);
+  *r = NULL;
 
 }
 
@@ -97,7 +125,7 @@ void destroi_r (struct racional *r) {
 int valido_r (struct racional *r) {
 
   // verfica se o racional foi alocado
-  if (!r || r -> den == 0)
+  if (!r || denominador_r(r) == 0)
     return 0;
   
   return 1;
@@ -217,4 +245,5 @@ int divide_r (struct racional *r1, struct racional *r2, struct racional *r3) {
 
   return 1;
 }
+
 
