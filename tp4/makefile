@@ -1,29 +1,21 @@
-# makefile generico para os TADs
-# Carlos Maziero - DINF/UFPR
+# Makefile de exemplo (Manual do GNU Make)
+     
+CFLAGS = -Wall -Werror -Wextra -std=c90 -g  # flags de compilacao
+LDFLAGS = -lm
 
-CC     = gcc
-CFLAGS = -Wall -Wextra -g -std=c99
-LIB    = lista
-BIN    = tp4
-OUT    = saida.txt
+CC = gcc
 
-# gera o arquivo executável
-$(BIN):   $(BIN).o $(LIB).o
+# arquivos-objeto
+	objects = tp4.o lista.o
 
-# gera os arquivos-objeto
-$(BIN).o: $(BIN).c $(LIB).h
-$(LIB).o: $(LIB).c $(LIB).h
+tp4: tp4.o lista.o
+	$(CC) -o tp4 tp4.o lista.o $(LDFLAGS)
 
-# teste de execução
-teste: $(BIN)
-	./$(BIN) > $(OUT)
-	@echo "Diferenças entre saida esperada e gerada:"
-	@diff $(BIN).txt $(OUT)
+fila.o: lista.c
+	$(CC) -c $(CFLAGS) lista.c
 
-# verificação de memória
-valgrind: $(BIN)
-	valgrind --leak-check=full --track-origins=yes ./$(BIN)
+tp4.o: tp4.c
+	$(CC) -c $(CFLAGS) tp4.c
 
-# limpeza
 clean:
-	rm -f *.o *~ $(BIN) $(OUT)
+	rm -f $(objects) tp4
