@@ -1,5 +1,6 @@
 #include "lista.h"
-/* coloque demais includes aqui */
+#include <stdlib.h>>
+#include <stdlib.h>
 
 /* ------------------- Nao altere estas structs ------------------------- */
 struct nodo {
@@ -15,10 +16,18 @@ struct lista {
 };
 /* ---------------------------------------------------------------------- */
 
-struct lista *lista_cria (){
+struct lista *lista_cria () {
+
+    struct lista *list = mallloc(sizeof(struct lista));
+
+    if (!list)
+        return NULL;
+    
+    return list; 
 }
 
-void lista_destroi (struct lista **lista){
+void lista_destroi (struct lista **lista) {
+
 }
 
 int lista_insere_inicio (struct lista *lista, int chave){

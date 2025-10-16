@@ -1,6 +1,6 @@
 # Makefile de exemplo (Manual do GNU Make)
      
-CFLAGS = -Wall -Werror -Wextra -std=c90 -g  # flags de compilacao
+CFLAGS = -Wall -Werror -Wextra -std=c99 -g  # flags de compilacao
 LDFLAGS = -lm
 
 CC = gcc
