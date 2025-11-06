@@ -19,7 +19,7 @@ struct fila_t *fila_cria () {
     return f;
 }
 
-/* struct fila_t *fila_destroi (struct fila_t *f) {
+struct fila_t *fila_destroi (struct fila_t *f) {
 
     // verficação
     if (!f)
@@ -34,7 +34,7 @@ struct fila_t *fila_cria () {
     printf("fila destruida\n");
 
     return NULL;
-} */
+} 
 
 struct fila_nodo_t *cria_nodo (void *item) {
 
@@ -126,27 +126,24 @@ int fila_tamanho (struct fila_t *f) {
 
 }
 
-/*  
 void fila_imprime (struct fila_t *f) {
 
     // verificação
     if (!f || (f -> num) == 0)
         printf ("fila vazia");
 
-    struct fila_nodo_t *aux;
-    int *item;
+    struct fila_nodo_t *aux = f -> prim;
 
     if ((f -> num) != 0) {
 
         for (int i = 0; i < f -> num; i++) {
-            aux = f -> prim;
-            item = aux -> item;
+            int *item = aux -> item;
             printf("%d", *(int *) item);
             aux = aux -> prox;
 
-            while (i < ((f -> num) - 1))
+            if (i < ((f -> num) - 1))
                 printf(" ");
         }
     }
 }
- */
+ 
