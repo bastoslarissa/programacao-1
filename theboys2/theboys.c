@@ -2,6 +2,7 @@
 // Autor: Larissa de Souza Bastos, GRR 20235088
 
 #include "fila.h"
+#include <stdio.h>
 
 // seus #defines vão aqui
 
@@ -12,17 +13,25 @@ int main ()
 {
 
   struct fila_t *f;
-  int *item;
-  int x = 10;
+  int *item, *item2, *item3;
+  int x = 10, y = 20, z = 30;
   item = &x;
+  item2 = &y;
+  item3 = &z;
 
   f = fila_cria();
 
-  f  = fila_destroi(f);
-
   fila_insere(f, item);
+  fila_insere(f, item2);
+  fila_insere(f, item3);
 
   fila_retira(f);
+
+  int tam = fila_tamanho(f);
+
+  printf("%d\n", tam);
+
+  fila_imprime(f);
 
   // iniciar o mundo
 

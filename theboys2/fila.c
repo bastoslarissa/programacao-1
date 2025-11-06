@@ -19,23 +19,35 @@ struct fila_t *fila_cria () {
     return f;
 }
 
-struct fila_t *fila_destroi (struct fila_t *f) {
+/* struct fila_t *fila_destroi (struct fila_t *f) {
 
-    // verficiação
+    // verficação
     if (!f)
         return NULL;
 
-    struct fila_nodo_t *aux;
-
     for (int i = 0; i < f -> num; i++) {
-        aux = f -> prim;
+        struct fila_nodo_t *aux = f -> prim;
         f -> prim = f -> prim -> prox;
-        free(aux);
+        free(aux); 
     }
 
     printf("fila destruida\n");
 
     return NULL;
+} */
+
+struct fila_nodo_t *cria_nodo (void *item) {
+
+    struct fila_nodo_t *nodo = malloc(sizeof(struct fila_nodo_t));
+
+    // verificação
+    if (!nodo)
+        return NULL;
+
+    nodo -> item = item;
+    nodo -> prox = NULL;   
+
+    return nodo;
 }
 
 // Insere o item na fila
@@ -49,7 +61,9 @@ int fila_insere (struct fila_t *f, void *item) {
         return -1;
     }
 
-    struct fila_nodo_t *aux;
+    struct fila_nodo_t *aux;    // variável auxiliar
+    struct fila_nodo_t *novo_nodo = cria_nodo(item);     // cria novo nodo a ser inserido
+
 
     // caso: item igual
     for (int i = 0; i < f -> num; i++) {
@@ -66,17 +80,17 @@ int fila_insere (struct fila_t *f, void *item) {
     // caso: insere na primeira posição
     if (f -> num == 0) {
 
-        f -> prim -> item = item;
-        f -> fim -> item = item;
+        f -> prim = novo_nodo;
+        f -> fim = novo_nodo;
         (f -> num)++;
         printf("inseriu no inicio\n");
     }
 
     // caso: insere no fim da fila
-    if (f -> num > 0) {
+    else if (f -> num != 0) {
 
-        f -> fim -> prox -> item = item;
-        f -> fim = f -> fim -> prox;
+        f -> fim -> prox = novo_nodo;
+        f -> fim = novo_nodo;
         (f -> num)++;
         printf("inseriu no final\n");
     }
@@ -95,8 +109,42 @@ void *fila_retira (struct fila_t *f) {
     struct fila_nodo_t *aux = f -> prim -> item;
 
     f -> prim = f -> prim -> prox;
+    (f -> num)--;
 
-    printf("item retirado");
+    printf("item retirado\n");
 
     return aux -> item;
+}
+
+int fila_tamanho (struct fila_t *f) {
+
+    // verificação
+    if (!f)
+        return -1;
+
+    return f -> num;
+
+}
+
+ 
+void fila_imprime (struct fila_t *f) {
+
+    // verificação
+    if (!f || (f -> num) == 0)
+        printf ("fila vazia");
+
+    struct fila_nodo_t *aux;
+    int *item;
+
+    if ((f -> num) != 0) {
+
+        for (int i = 0; i < f -> num; i++) {
+            aux = f -> prim;
+            item = f -> prim -> item;
+            printf("%d", *(int *) item);
+
+            while (i < ((f -> num) - 1))
+                printf(" ");
+        }
+    }
 }
