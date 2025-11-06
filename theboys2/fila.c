@@ -126,7 +126,7 @@ int fila_tamanho (struct fila_t *f) {
 
 }
 
- 
+/*  
 void fila_imprime (struct fila_t *f) {
 
     // verificação
@@ -140,11 +140,13 @@ void fila_imprime (struct fila_t *f) {
 
         for (int i = 0; i < f -> num; i++) {
             aux = f -> prim;
-            item = f -> prim -> item;
+            item = aux -> item;
             printf("%d", *(int *) item);
+            aux = aux -> prox;
 
             while (i < ((f -> num) - 1))
                 printf(" ");
         }
     }
 }
+ */

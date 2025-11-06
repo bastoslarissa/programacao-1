@@ -31,7 +31,7 @@ int main ()
 
   printf("%d\n", tam);
 
-  fila_imprime(f);
+ /*  fila_imprime(f); */
 
   // iniciar o mundo
 
