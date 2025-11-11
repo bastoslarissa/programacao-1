@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-struct heroi {
+struct heroi_t {
 
     int id;
     int habilidades;
@@ -16,7 +16,7 @@ struct coordenadas {
     int y;
 };
 
-struct base {
+struct base_t {
 
     int id;
     int lotacao;
@@ -25,14 +25,14 @@ struct base {
     struct coordenadas local;
 };
 
-struct missao {
+struct missao_t {
 
     int id;
     struct cjto_t *habilidades;
     struct coordenadas local;
 };
 
-struct mundo {
+struct mundo_t {
 
     int NHerois;
     struct heroi *herois;   // vetor de heróis
