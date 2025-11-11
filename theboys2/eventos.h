@@ -1,4 +1,4 @@
-#include <stdio.h>
+/* #include <stdio.h>
 #include "entidades.h"
 
 void *chega (int *tempo, struct heroi_t *heroi, struct base_t *base);
@@ -21,3 +21,4 @@ void *missao (int *tempo, struct missao_t *missao);
 
 void *fim (int *tempo);
 
+ */

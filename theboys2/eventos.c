@@ -1,9 +1,9 @@
-#include "eventos.h"
+/* #include "eventos.h"
 #include "entidades.h"
 #include "conjunto.h"
 #include "fila.h"
 
-/* void *chega (int *tempo, struct heroi_t *heroi, struct base_t *base) {
+void *chega (int *tempo, struct heroi_t *heroi, struct base_t *base) {
 
     // atualiza a base de herói
     heroi -> base = base -> id;
@@ -17,4 +17,4 @@
     
     else 
 
-} */
+}  */
