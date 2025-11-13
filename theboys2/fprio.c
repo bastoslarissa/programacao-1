@@ -5,22 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// descreve um nodo da fila de prioridades
-struct fpnodo_t
-{
-  void *item ;          // item associado ao nodo
-  int   tipo ;          // tipo do item
-  int   prio ;          // prioridade do item
-  struct fpnodo_t *prox;    // próximo nodo
-};
-
-// descreve uma fila de prioridades
-struct fprio_t
-{
-  struct fpnodo_t *prim ;   // primeiro nodo da fila
-  int num ;         // número de itens na fila
-} ;
-
 struct fprio_t *fprio_cria () {
 
     struct fprio_t *fila = malloc (sizeof (struct fprio_t));

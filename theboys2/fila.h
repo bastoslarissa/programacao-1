@@ -31,7 +31,7 @@ int fila_insere (struct fila_t *f, void *item);
 
 // Retira o primeiro item da fila e o devolve
 // Retorno: ponteiro para o item retirado ou NULL se fila vazia ou erro.
-void *fila_retira (struct fila_t *f);
+int *fila_retira (struct fila_t *f);
 
 // Informa o número de itens na fila.
 // Retorno: N >= 0 ou -1 se erro.

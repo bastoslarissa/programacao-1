@@ -100,7 +100,7 @@ int fila_insere (struct fila_t *f, void *item) {
 
 // Retira o primeiro item da fila e o devolve
 // Retorno: ponteiro para o item retirado ou NULL se fila vazia ou erro.
-void *fila_retira (struct fila_t *f) {
+int *fila_retira (struct fila_t *f) {
 
     //verificação
     if (!f || f -> num == 0)
