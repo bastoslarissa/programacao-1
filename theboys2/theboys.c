@@ -14,9 +14,9 @@
 int main ()
 {
 
-    struct heroi_t *heroi;
+    struct mundo_t *mundo;
 
-    inicializa_herois(heroi);
+    inicializa_mundo(mundo);
    
 
   // iniciar o mundo

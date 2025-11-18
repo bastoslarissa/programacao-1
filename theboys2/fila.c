@@ -14,8 +14,6 @@ struct fila_t *fila_cria () {
     f -> fim = NULL;
     f -> num = 0;
 
-    printf("fila criada \n");
-
     return f;
 }
 

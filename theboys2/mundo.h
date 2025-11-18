@@ -9,6 +9,17 @@
 #define N_MISSOES (T_FIM_DO_MUNDO / 100)
 #define N_COMPOSTOS_V (N_HABLIDADES * 3)
 
+#define CHEGA 1
+#define ESPERA 2
+#define DESISTE 3
+#define AVISA 4
+#define ENTRA 5
+#define SAI 6
+#define VIAJA 7
+#define MORRE 8
+#define MISSAO 9
+#define FIM 10
+
 /* -----------------------------------------------------------------
                             ENTIDADES                               
    -----------------------------------------------------------------*/
@@ -16,7 +27,7 @@
 struct heroi_t {
 
     int id;
-    int habilidades;
+    struct cjto_t *habilidades;
     int paciencia;
     int velocidade;
     int experiencia;
@@ -48,16 +59,17 @@ struct missao_t {
 struct mundo_t {
 
     int NHerois;
-    struct heroi *herois;   // vetor de heróis
+    struct heroi_t *herois;   // vetor de heróis
     int NBases;
-    struct base *bases;     // vetor de bases
+    struct base_t *bases;     // vetor de bases
     int NMissoes;
-    struct missao *missoes;     // vetor de missoes
+    struct missao_t *missoes;     // vetor de missoes
     int NHabilidades;
     int NCompostosV;
     int TamanhoMundo;    //coordenadas máximas do plano cartesiano que representa o mundo
     int relogio;
 };
+
 
 /* talvez apagar isso? */
 
@@ -71,3 +83,5 @@ struct mundo_t {
 /* void inicializa_missoes (struct missao_t *missoes); */
 
 void inicializa_mundo (struct mundo_t *mundo);
+
+void eventos_iniciais (struct mundo_t *mundo);
