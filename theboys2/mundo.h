@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "conjunto.h"
+#include "fila.h"
+#include "fprio.h"
 
 // inicialização do mundo virtual
 #define T_INICIO 0
@@ -70,18 +75,24 @@ struct mundo_t {
     int relogio;
 };
 
+struct evento_t {
 
-/* talvez apagar isso? */
+    int tempo;
+    int tipo;
+    struct heroi_t *heroi;
+    struct base_t *base;
+    struct missao_t *missao;
+    
+};
 
-// inicialização de cada herói
-/* void inicializa_herois (struct heroi_t *heroi); */
+/* -----------------------------------------------------------------
+                             FUNÇÕES                               
+   -----------------------------------------------------------------*/
 
-// inicialização de cada base 
-/* void inicializa_bases (struct base_t *base); */
-
-// inicialização de cada missão 
-/* void inicializa_missoes (struct missao_t *missoes); */
+struct evento_t *cria_evento (int tempo, int tipo, struct heroi_t *heroi, struct base_t *base, struct missao_t *missao);
 
 void inicializa_mundo (struct mundo_t *mundo);
 
-void eventos_iniciais (struct mundo_t *mundo);
+void eventos_iniciais (struct mundo_t *mundo, struct fprio_t *lef);
+
+void iniciar_o_mundo ();

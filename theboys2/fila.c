@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "fila.h"
 
+// Cria uma fila vazia.
+// Retorno: ponteiro para a fila criada ou NULL se erro.
 struct fila_t *fila_cria () {
 
     struct fila_t *f = malloc(sizeof(struct fila_t));
@@ -11,12 +13,14 @@ struct fila_t *fila_cria () {
         return NULL;
     
     f -> prim = NULL;
-    f -> fim = NULL;
+    f -> ult = NULL;
     f -> num = 0;
 
     return f;
 }
 
+// Libera todas as estruturas de dados da fila, inclusive os itens.
+// Retorno: NULL.
 struct fila_t *fila_destroi (struct fila_t *f) {
 
     // verficação
@@ -34,7 +38,9 @@ struct fila_t *fila_destroi (struct fila_t *f) {
     return NULL;
 } 
 
-struct fila_nodo_t *cria_nodo (void *item) {
+// Cria um nodo. 
+// Retorno: ponteiro para o nodo criado ou NULL.
+struct fila_nodo_t *cria_nodo (int item) {
 
     struct fila_nodo_t *nodo = malloc(sizeof(struct fila_nodo_t));
 
@@ -48,72 +54,48 @@ struct fila_nodo_t *cria_nodo (void *item) {
     return nodo;
 }
 
-// Insere o item na fila
-// Inserir duas vezes o mesmo item (o mesmo ponteiro) é um erro.
-// Retorno: número de itens na fila após a operação ou -1 se erro.
-int fila_insere (struct fila_t *f, void *item) {
+// Insere um item no final da fila (politica FIFO).
+// Retorno: 1 se tiver sucesso ou 0 se falhar.
+int fila_insere (struct fila_t *f, int item) {
 
     // verificação
     if (!f || !item) {
-        printf("deu erro\n");
-        return -1;
+        return 0;
     }
 
-    struct fila_nodo_t *aux;    // variável auxiliar
     struct fila_nodo_t *novo_nodo = cria_nodo(item);     // cria novo nodo a ser inserido
 
 
-    // caso: item igual
-    for (int i = 0; i < f -> num; i++) {
-        aux = f -> prim;
-
-        if (aux -> item == item) {
-            printf("item igual\n");
-            return -1;
-        }
-        else
-            aux = f -> prim -> prox; 
-    }   
-
-    // caso: insere na primeira posição
-    if (f -> num == 0) {
-
-        f -> prim = novo_nodo;
-        f -> fim = novo_nodo;
-        (f -> num)++;
-        printf("inseriu no inicio\n");
-    }
-
-    // caso: insere no fim da fila
-    else if (f -> num != 0) {
-
-        f -> fim -> prox = novo_nodo;
-        f -> fim = novo_nodo;
+    // insere o item no fim da fila
+        f -> ult -> prox = novo_nodo;
+        f -> ult = novo_nodo;
         (f -> num)++;
         printf("inseriu no final\n");
-    }
 
-    return f -> num;
+
+    return 1;
 }
 
 // Retira o primeiro item da fila e o devolve
 // Retorno: ponteiro para o item retirado ou NULL se fila vazia ou erro.
-int *fila_retira (struct fila_t *f) {
+int fila_retira (struct fila_t *f, int *item) {
 
     //verificação
     if (!f || f -> num == 0)
-        return NULL;
+        return 0;
 
-    struct fila_nodo_t *aux = f -> prim -> item;
+    int *aux = item;
 
     f -> prim = f -> prim -> prox;
     (f -> num)--;
 
     printf("item retirado\n");
 
-    return aux -> item;
-}
+    return *aux;
+}   
 
+// Informa o número de itens na fila.
+// Retorno: N >= 0 ou -1 se erro.
 int fila_tamanho (struct fila_t *f) {
 
     // verificação
@@ -124,6 +106,7 @@ int fila_tamanho (struct fila_t *f) {
 
 }
 
+// Imprime o conteúdo da fila 
 void fila_imprime (struct fila_t *f) {
 
     // verificação
@@ -135,8 +118,8 @@ void fila_imprime (struct fila_t *f) {
     if ((f -> num) != 0) {
 
         for (int i = 0; i < f -> num; i++) {
-            int *item = aux -> item;
-            printf("%d", *(int *) item);
+            int item = aux -> item;
+            printf("%d", item);
             aux = aux -> prox;
 
             if (i < ((f -> num) - 1))
