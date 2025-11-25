@@ -67,11 +67,21 @@ int fila_insere (struct fila_t *f, int item) {
 
 
     // insere o item no fim da fila
+    if (f -> num == 0) {
+
+        f -> prim = novo_nodo;
+        f -> ult = novo_nodo;
+
+        (f -> num)++;   // incrementa a quantidade de elementos da fila
+    }
+
+    else if (f -> num != 0) {
+
         f -> ult -> prox = novo_nodo;
         f -> ult = novo_nodo;
-        (f -> num)++;
-        printf("inseriu no final\n");
 
+        (f -> num)++;   // incrementa a quantidade de elementos da fila
+    }
 
     return 1;
 }

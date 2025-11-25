@@ -8,7 +8,7 @@
 * Gera um número aleatório entre min e max */
 int aleat (int min, int max) {
 
-    int aleat = rand()%(max - min + 1) + min;
+    int aleat = (rand()%(max - min + 1)) + min;
 
     return aleat;
 
@@ -43,7 +43,7 @@ void inicializa_mundo (struct mundo_t *mundo) {
     mundo -> NHerois = N_HEROIS;
     mundo -> NBases = N_BASES;
     mundo -> NMissoes = N_MISSOES;
-    mundo -> NHabilidades = N_HABLIDADES;
+    mundo -> NHabilidades = N_HABILIDADES;
     mundo -> NCompostosV = N_COMPOSTOS_V;
     mundo -> TamanhoMundo = N_TAMANHO_MUNDO;
     mundo -> relogio = 0;
@@ -58,22 +58,27 @@ void inicializa_mundo (struct mundo_t *mundo) {
         mundo -> herois[i].paciencia = aleat(0, 100);   // nº aleatório entre 0 e 100
         mundo -> herois[i].velocidade = aleat(50, 5000);    // nº aleatório entre 50 e 5000 
 
-        mundo -> herois[i].habilidades = cjto_aleat(aleat(1, 3), N_HABLIDADES);     // conjunto aleatório de [1...3] habilidades distintas
+        mundo -> herois[i].habilidades = cjto_aleat(aleat(1, 3), N_HABILIDADES);     // conjunto aleatório de [1...3] habilidades distintas
         
     }
 
     // inicializa as bases
     mundo -> bases = malloc(sizeof(struct base_t) * N_BASES);
 
-    for (int i = 0; i <= N_BASES; i++) {
+    for (int i = 0; i < N_BASES; i++) {
 
         mundo -> bases[i].id = i;
         mundo -> bases[i].local.x = aleat(0, N_TAMANHO_MUNDO - 1);  // coordenada x aleatória 
         mundo -> bases[i].local.y = aleat(0, N_TAMANHO_MUNDO - 1);  // coordenada y aleatória 
         mundo -> bases[i].lotacao = aleat(3, 10);   // nº aleatório entre 3 e 10
-        mundo -> bases[i].presentes = cjto_cria(mundo -> bases[i].lotacao);     // conjunto com capacidade da lotação aleatória gerada acima
+        mundo -> bases[i].presentes = cjto_cria(mundo -> NHerois);     // conjunto com capacidade da lotação aleatória gerada acima
+
+        //mundo -> bases[i].presentes = cjto_cria(mundo -> bases[i].lotacao);     // conjunto com capacidade da lotação aleatória gerada acima
         mundo -> bases[i].espera = fila_cria();     // fila vazia
-        
+
+        printf("base id: %d\nbase local: (%d, %d)\nbase lotação: %d\nbase presentes: ", mundo -> bases[i].id, mundo -> bases[i].local.x, mundo -> bases[i].local.y, mundo -> bases[i].lotacao);
+        cjto_imprime(mundo -> bases[i].presentes);
+         printf("\n\n");
     }
 
     // inicializa as missões 
@@ -85,7 +90,7 @@ void inicializa_mundo (struct mundo_t *mundo) {
         mundo -> missoes[i].local.x = aleat(0, N_TAMANHO_MUNDO - 1);    // coordenada x aleatória 
         mundo -> missoes[i].local.y = aleat(0, N_TAMANHO_MUNDO - 1);    // coordenada y aleatória
 
-        mundo -> missoes[i].habilidades = cjto_aleat(aleat(6, 10), N_HABLIDADES);  // conjunto com capacidade aleatória
+        mundo -> missoes[i].habilidades = cjto_aleat(aleat(6, 10), N_HABILIDADES);  // conjunto com capacidade aleatória
     }
 
 }
@@ -104,7 +109,7 @@ void eventos_iniciais (struct mundo_t *mundo, struct fprio_t *lef) {
 
         // insere na LEF o evento CHEGA 
         fprio_insere(lef, evento_heroi_chega, CHEGA, tempo_heroi);
-    }
+    }   
 
 
     // eventos iniciais: missões

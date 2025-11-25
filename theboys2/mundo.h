@@ -6,13 +6,13 @@
 
 // inicialização do mundo virtual
 #define T_INICIO 0
-#define T_FIM_DO_MUNDO 525600
-#define N_TAMANHO_MUNDO 20000
-#define N_HABLIDADES 10
-#define N_HEROIS (N_HABLIDADES * 5)
+#define T_FIM_DO_MUNDO 5256
+#define N_TAMANHO_MUNDO 1000
+#define N_HABILIDADES 10
+#define N_HEROIS (N_HABILIDADES * 5)
 #define N_BASES (N_HEROIS / 5)
 #define N_MISSOES (T_FIM_DO_MUNDO / 100)
-#define N_COMPOSTOS_V (N_HABLIDADES * 3)
+#define N_COMPOSTOS_V (N_HABILIDADES * 3)
 
 #define CHEGA 1
 #define ESPERA 2
