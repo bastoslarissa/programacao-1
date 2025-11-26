@@ -87,21 +87,20 @@ int fila_insere (struct fila_t *f, int item) {
 }
 
 // Retira o primeiro item da fila e o devolve
-// Retorno: ponteiro para o item retirado ou NULL se fila vazia ou erro.
+// Retorno 1 se a operação foi bem sucedida e 0 caso contrário
 int fila_retira (struct fila_t *f, int *item) {
 
     //verificação
-    if (!f || f -> num == 0)
+    if (!f || !item || f -> num == 0)
         return 0;
 
-    int *aux = item;
+    struct fila_nodo_t *aux = f -> prim;
 
     f -> prim = f -> prim -> prox;
+    free(aux);
     (f -> num)--;
 
-    printf("item retirado\n");
-
-    return *aux;
+    return 1;
 }   
 
 // Informa o número de itens na fila.

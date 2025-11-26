@@ -88,6 +88,7 @@ struct evento_t {
 /* -----------------------------------------------------------------
                              FUNÇÕES                               
    -----------------------------------------------------------------*/
+int aleat (int min, int max);
 
 struct evento_t *cria_evento (int tempo, int tipo, struct heroi_t *heroi, struct base_t *base, struct missao_t *missao);
 

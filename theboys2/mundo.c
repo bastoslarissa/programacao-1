@@ -75,10 +75,6 @@ void inicializa_mundo (struct mundo_t *mundo) {
 
         //mundo -> bases[i].presentes = cjto_cria(mundo -> bases[i].lotacao);     // conjunto com capacidade da lotação aleatória gerada acima
         mundo -> bases[i].espera = fila_cria();     // fila vazia
-
-        printf("base id: %d\nbase local: (%d, %d)\nbase lotação: %d\nbase presentes: ", mundo -> bases[i].id, mundo -> bases[i].local.x, mundo -> bases[i].local.y, mundo -> bases[i].lotacao);
-        cjto_imprime(mundo -> bases[i].presentes);
-         printf("\n\n");
     }
 
     // inicializa as missões 
@@ -101,7 +97,7 @@ void eventos_iniciais (struct mundo_t *mundo, struct fprio_t *lef) {
     // eventos iniciais : heróis
     for (int i = 0; i < N_HEROIS; i++) {
 
-        int base_aleatoria = aleat(0, N_BASES);
+        int base_aleatoria = aleat(0, N_BASES - 1);
         int tempo_heroi = aleat(0, 4320);   // 4.320 minutos = 3 dias;
 
         // cria o evento herói chega

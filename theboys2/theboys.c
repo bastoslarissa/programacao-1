@@ -27,8 +27,6 @@ int main ()
     inicializa_mundo(mundo);
     eventos_iniciais(mundo, lef);
 
-
-    getchar();
     // executa os eventos da fprio
     while (relogio < T_FIM_DO_MUNDO) {
 
@@ -37,19 +35,40 @@ int main ()
     relogio = evento_atual -> tempo;
 
     if ( (evento_atual -> tipo) == CHEGA) {
-       printf("=====\n");
-                printf("base id: %d\nbase local: (%d, %d)\nbase lotação: %d\nbase presentes: ", evento_atual -> base -> id, evento_atual -> base -> local.x, evento_atual -> base ->local.y, evento_atual -> base -> lotacao);
-        cjto_imprime(evento_atual -> base -> presentes);
-         printf("\n\n");
-          printf("=====\n");
 
         chega(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
-       
     }
 
-    else if ( (evento_atual -> tipo) == ESPERA)
+    else if ( (evento_atual -> tipo) == ESPERA) {
+
       espera(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
     }
+
+    else if ( (evento_atual -> tipo) == DESISTE) {
+
+      desiste(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == AVISA) {
+
+      avisa(&evento_atual -> tempo, evento_atual -> base, mundo, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == ENTRA) {
+
+      entra(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == SAI) {
+
+      sai(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
+    }
+
+     else if ( (evento_atual -> tipo) == VIAJA) {
+
+      viaja(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, mundo, lef);
+    } 
+  }
    
 
   // iniciar o mundo
@@ -59,5 +78,6 @@ int main ()
   // destruir o mundo
 
   return (0) ;
+
 }
 
