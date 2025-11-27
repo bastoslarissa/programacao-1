@@ -1,4 +1,4 @@
-#include "mundo.h"
+ #include "mundo.h"
 
 void *chega (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef);
 
@@ -18,4 +18,4 @@ void *morre (int *tempo, struct heroi_t *heroi, struct base_t *base, struct miss
 
 void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct fprio_t *lef);
 
-void *fim (int *tempo, struct fprio_t *lef);
+void *fim (int *tempo, struct mundo_t *mundo, struct fprio_t *lef);

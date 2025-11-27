@@ -193,10 +193,13 @@ void *viaja (int *tempo, struct heroi_t *heroi, struct base_t *base_d, struct mu
 // O herói é retirado da base, o porteiro é avisado e os eventos futuros com esse herói são ignorados
 void *morre (int *tempo, struct heroi_t *heroi, struct base_t *base, struct missao_t *missao, struct fprio_t *lef) {
 
+
     // retira o herói do conjunto de heróis presentes na base
     cjto_retira(base -> presentes, heroi -> id);
     
     // muda o status do herói para morto
+    printf("heroi id: %d, heroi velocidade: %d\n", heroi->id, heroi->velocidade);
+
     heroi -> status = 0;
 
     // cria e insere na LEF o evento AVISA 
@@ -413,6 +416,8 @@ void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct
             struct heroi_t heroi_mais_experiente = encontra_hme(bmp_nao_apta, mundo);     // encontra o heroi mais experiente da base
 
             // crie e insere na LEF o evento MORRE para o herói mais experiente
+            heroi_mais_experiente.status = 0;
+
             struct evento_t *evento_morre = cria_evento(*tempo, MORRE, &heroi_mais_experiente, bmp_nao_apta, missao);
 
             fprio_insere(lef, evento_morre, MORRE, *tempo);
@@ -438,5 +443,36 @@ void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct
     }
 
     return 0;
+}
+
+// Função Fim
+// Encerra a simulação e apresenta as estatísticas das entidades
+void *fim (int *tempo, struct mundo_t *mundo, struct fprio_t *lef) {
+
+    // apresenta as estatísticas
+    printf("%6d: FIM\n", *tempo); 
+
+    // imprime as estatísticas dos heróis
+    for (int i = 0; i < N_HEROIS; i++) {
+
+        printf("heroi id %d status %d\n", mundo->herois[i].id, mundo->herois[i].status);
+        if ( (mundo -> herois[i].status) == 0) {
+
+            printf("HEROI %2d MORTO PAC %3d VEL %4d EXP %4d HABS [", mundo -> herois[i].id, mundo -> herois[i].paciencia, mundo -> herois[i].velocidade, mundo -> herois[i].experiencia);
+            cjto_imprime(mundo -> herois[i].habilidades);
+            printf("]\n");
+        }
+
+        else if ( (mundo -> herois[i].status) == 1) {
+
+            printf("HEROI %2d VIVO PAC %3d VEL %4d EXP %4d HABS [", mundo -> herois[i].id, mundo -> herois[i].paciencia, mundo -> herois[i].velocidade, mundo -> herois[i].experiencia);
+            cjto_imprime(mundo -> herois[i].habilidades);
+            printf("]\n");
+        }
+
+    }
+
+    return 0;
+
 }
 

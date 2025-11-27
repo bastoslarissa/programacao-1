@@ -79,6 +79,11 @@ int main ()
       missao(&evento_atual -> tempo, evento_atual -> missao, mundo, lef);
     }
 
+    else if ( (evento_atual -> tipo) == FIM) {
+
+      fim(&evento_atual -> tempo, mundo, lef);
+    }
+
   }
 
 /*       for (int i = 0; i < N_MISSOES; i++) {
