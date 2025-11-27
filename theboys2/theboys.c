@@ -61,14 +61,30 @@ int main ()
 
     else if ( (evento_atual -> tipo) == SAI) {
 
-      sai(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
+      sai(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, mundo, lef);
     }
 
-     else if ( (evento_atual -> tipo) == VIAJA) {
+    else if ( (evento_atual -> tipo) == VIAJA) {
 
       viaja(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, mundo, lef);
-    } 
+    }  
+
+    else if ( (evento_atual -> tipo) == MORRE) {
+
+      morre(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, evento_atual -> missao, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == MISSAO) {
+
+      missao(&evento_atual -> tempo, evento_atual -> missao, mundo, lef);
+    }
+
   }
+
+/*       for (int i = 0; i < N_MISSOES; i++) {
+
+      printf("missao %d tentativas: %d\n", mundo -> bases[i].id ,mundo -> missoes[i].quantidade_tentativas);
+    } */
    
 
   // iniciar o mundo

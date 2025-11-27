@@ -59,6 +59,8 @@ void inicializa_mundo (struct mundo_t *mundo) {
         mundo -> herois[i].velocidade = aleat(50, 5000);    // nº aleatório entre 50 e 5000 
 
         mundo -> herois[i].habilidades = cjto_aleat(aleat(1, 3), N_HABILIDADES);     // conjunto aleatório de [1...3] habilidades distintas
+
+        mundo -> herois[i].status = 1;  // inicializa o herói como vivo
         
     }
 
@@ -87,6 +89,9 @@ void inicializa_mundo (struct mundo_t *mundo) {
         mundo -> missoes[i].local.y = aleat(0, N_TAMANHO_MUNDO - 1);    // coordenada y aleatória
 
         mundo -> missoes[i].habilidades = cjto_aleat(aleat(6, 10), N_HABILIDADES);  // conjunto com capacidade aleatória
+
+        mundo -> missoes[i].status = 0;  // inicializa as missões como não concluídas
+        mundo -> missoes[i].quantidade_tentativas = 0;  // inicializa as missões com 0 tentativas de concluir a missão
     }
 
 }

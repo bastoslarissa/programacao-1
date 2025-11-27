@@ -8,7 +8,7 @@
 #define T_INICIO 0
 #define T_FIM_DO_MUNDO 5256
 #define N_TAMANHO_MUNDO 1000
-#define N_HABILIDADES 10
+#define N_HABILIDADES 5
 #define N_HEROIS (N_HABILIDADES * 5)
 #define N_BASES (N_HEROIS / 5)
 #define N_MISSOES (T_FIM_DO_MUNDO / 100)
@@ -37,6 +37,7 @@ struct heroi_t {
     int velocidade;
     int experiencia;
     int base;
+    int status;
 };
 
 struct coordenadas {
@@ -59,6 +60,8 @@ struct missao_t {
     int id;
     struct cjto_t *habilidades;
     struct coordenadas local;
+    int status;
+    int quantidade_tentativas;
 };
 
 struct mundo_t {
