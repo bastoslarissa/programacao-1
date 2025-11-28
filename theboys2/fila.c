@@ -33,7 +33,7 @@ struct fila_t *fila_destroi (struct fila_t *f) {
         free(aux); 
     }
 
-    printf("fila destruida\n");
+    free(f);
 
     return NULL;
 } 

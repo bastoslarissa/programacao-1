@@ -7,7 +7,7 @@
 // inicialização do mundo virtual
 #define T_INICIO 0
 #define T_FIM_DO_MUNDO 5256
-#define N_TAMANHO_MUNDO 1000
+#define N_TAMANHO_MUNDO 2000
 #define N_HABILIDADES 5
 #define N_HEROIS (N_HABILIDADES * 5)
 #define N_BASES (N_HEROIS / 5)
@@ -53,6 +53,8 @@ struct base_t {
     struct cjto_t *presentes;
     struct fila_t *espera;
     struct coordenadas local;
+    int missoes_num;
+    int fila_max;
 };
 
 struct missao_t {
@@ -76,6 +78,9 @@ struct mundo_t {
     int NCompostosV;
     int TamanhoMundo;    //coordenadas máximas do plano cartesiano que representa o mundo
     int relogio;
+    int eventos_tratados;
+    int missoes_cumpridas;
+    int missoes_total;
 };
 
 struct evento_t {
@@ -98,5 +103,3 @@ struct evento_t *cria_evento (int tempo, int tipo, struct heroi_t *heroi, struct
 void inicializa_mundo (struct mundo_t *mundo);
 
 void eventos_iniciais (struct mundo_t *mundo, struct fprio_t *lef);
-
-void iniciar_o_mundo ();

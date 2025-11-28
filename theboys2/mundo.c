@@ -47,6 +47,9 @@ void inicializa_mundo (struct mundo_t *mundo) {
     mundo -> NCompostosV = N_COMPOSTOS_V;
     mundo -> TamanhoMundo = N_TAMANHO_MUNDO;
     mundo -> relogio = 0;
+    mundo -> eventos_tratados = 0;
+    mundo -> missoes_cumpridas = 0;
+    mundo -> missoes_total = 0;
 
     // inicializa os heróis
     mundo -> herois = malloc(sizeof(struct heroi_t) * N_HEROIS);
@@ -57,10 +60,9 @@ void inicializa_mundo (struct mundo_t *mundo) {
         mundo -> herois[i].experiencia = 0;
         mundo -> herois[i].paciencia = aleat(0, 100);   // nº aleatório entre 0 e 100
         mundo -> herois[i].velocidade = aleat(50, 5000);    // nº aleatório entre 50 e 5000 
+        mundo -> herois[i].status = 1;
 
         mundo -> herois[i].habilidades = cjto_aleat(aleat(1, 3), N_HABILIDADES);     // conjunto aleatório de [1...3] habilidades distintas
-
-        mundo -> herois[i].status = 1;  // inicializa o herói como vivo
         
     }
 
@@ -73,10 +75,10 @@ void inicializa_mundo (struct mundo_t *mundo) {
         mundo -> bases[i].local.x = aleat(0, N_TAMANHO_MUNDO - 1);  // coordenada x aleatória 
         mundo -> bases[i].local.y = aleat(0, N_TAMANHO_MUNDO - 1);  // coordenada y aleatória 
         mundo -> bases[i].lotacao = aleat(3, 10);   // nº aleatório entre 3 e 10
-        mundo -> bases[i].presentes = cjto_cria(mundo -> NHerois);     // conjunto com capacidade da lotação aleatória gerada acima
-
-        //mundo -> bases[i].presentes = cjto_cria(mundo -> bases[i].lotacao);     // conjunto com capacidade da lotação aleatória gerada acima
+        mundo -> bases[i].presentes = cjto_cria(mundo -> bases[i].lotacao);     // conjunto com capacidade da lotação aleatória gerada acima
         mundo -> bases[i].espera = fila_cria();     // fila vazia
+        mundo -> bases[i].missoes_num = 0;      // inicializa a base com 0 missões participadas
+        mundo -> bases[i].fila_max = 0;     // inicializa a base com fila max com 0 pessoas
     }
 
     // inicializa as missões 
@@ -131,14 +133,3 @@ void eventos_iniciais (struct mundo_t *mundo, struct fprio_t *lef) {
     fprio_insere(lef, evento_fim, FIM, T_FIM_DO_MUNDO);
 
 }
-
-/* -------------------------------------------------------------------------------------
-                                  EXECUÇÃO DO MUNDO
-   ------------------------------------------------------------------------------------ */
-
-/* void iniciar_o_mundo () {
-
-
-
-    
-} */

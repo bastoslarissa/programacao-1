@@ -5,6 +5,10 @@
 // Herói chega na base e decide se vai esperar ou desistir de entrar
 void *chega (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
 
+    // verificação
+    if (!tempo || !heroi || !base || !lef)
+        return NULL;
+
     int espera;
 
     // atualiza a base de herói
@@ -56,8 +60,17 @@ void *chega (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fpri
 // O herói entra na fila de espera da base
 void *espera (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
 
+    // verificação
+    if (!tempo || !heroi || !base || !lef)
+        return NULL;
+
     // insere o herói no fim da fila de espera da base
     fila_insere( (base -> espera), heroi -> id);
+
+    // verifica se o tamanho da fila de espera é o tamanho máximo de fila que a base já teve, se sim, atualiza;
+    if ( (base -> espera -> num) > base -> fila_max)
+
+        base -> fila_max = base -> espera -> num;
 
     // cria e insere na LEF o evento AVISA, que avisa ao porteiro para verificar a fila de espera da base
     struct evento_t *evento_avisa = cria_evento(*tempo, AVISA, heroi, base, NULL);
@@ -72,6 +85,10 @@ void *espera (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fpr
 // Função Desiste
 // O herói desiste de entrar na base
 void *desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
+
+    // verificação
+    if (!tempo || !heroi || !base || !lef)
+        return NULL;
 
     // escolhe uma base destino aleatória
     int id_aleatorio = aleat(0, N_BASES - 1); 
@@ -90,6 +107,10 @@ void *desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fp
 // Função Avisa
 // O porteiro libera a entrada de alguns heróis na base
 void *avisa (int *tempo, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef) {
+
+    // verificação
+    if (!tempo || !base || !mundo|| !lef)
+        return NULL;
 
     // Enquanto houver vaga em B e houver heróis esperando na fila
     while ( ( (cjto_card(base -> presentes)) < base -> lotacao) && (fila_tamanho(base -> espera) > 0) ) {
@@ -138,6 +159,10 @@ void *entra (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fpri
 // O porteiro é avisado que uma vaga foi liberada na base 
 void *sai (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef) {
 
+    // verificação
+    if (!tempo || !heroi || !base || !lef)
+        return NULL;
+
     // retira o herói do conjunto de heróis presentes na base
     cjto_retira(base -> presentes, heroi -> id);
     
@@ -165,6 +190,10 @@ void *sai (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mundo_
 // Fórmula de cálculo de distância cartesiana: √((x2 - x1)² + (y2 - y1)²)
 void *viaja (int *tempo, struct heroi_t *heroi, struct base_t *base_d, struct mundo_t *mundo, struct fprio_t *lef) {
     
+    // verificação
+    if (!tempo || !heroi || !base_d || !mundo || !lef)
+        return NULL;
+
     int x1 = mundo -> bases[heroi -> base].local.x;    // coordenada x base origem 
     int y1 = mundo -> bases[heroi -> base].local.y;    // coordenada y base origem
     
@@ -193,13 +222,10 @@ void *viaja (int *tempo, struct heroi_t *heroi, struct base_t *base_d, struct mu
 // O herói é retirado da base, o porteiro é avisado e os eventos futuros com esse herói são ignorados
 void *morre (int *tempo, struct heroi_t *heroi, struct base_t *base, struct missao_t *missao, struct fprio_t *lef) {
 
-
     // retira o herói do conjunto de heróis presentes na base
     cjto_retira(base -> presentes, heroi -> id);
-    
-    // muda o status do herói para morto
-    printf("heroi id: %d, heroi velocidade: %d\n", heroi->id, heroi->velocidade);
 
+    // muda o status do herói para morto
     heroi -> status = 0;
 
     // cria e insere na LEF o evento AVISA 
@@ -216,27 +242,24 @@ void *morre (int *tempo, struct heroi_t *heroi, struct base_t *base, struct miss
 // Verifica se os heróis presentes na base possuem juntos as habilidades necessárias para a missão
 struct cjto_t *verifica_habilidades (struct base_t *base, struct missao_t *missao, struct mundo_t *mundo) {
 
-    int habilidades_total = 0;  // contador de habilidades
-
     // cria uma fila com os heróis presentes na base
     struct fila_t *herois_presentes = fila_cria();
 
     for (int i = 0; i < N_HEROIS; i++) {    //percorre a fila de heróis presentes na base
 
-        if ( (base -> presentes-> flag[i]) == true) {   
+        if ( base -> presentes -> flag[i] == true)  {   
 
             fila_insere(herois_presentes, i);   // insere o id do herói na fila
-            habilidades_total += mundo -> herois[i].habilidades -> num; 
         }
     }
 
     // cria um conjunto com as habilidades de todos os heróis presentes na base
-    struct cjto_t *conjunto_habilidades = cjto_cria(habilidades_total);
+    struct cjto_t *conjunto_habilidades = cjto_cria(N_HABILIDADES);
 
     // adiciona as habilidades dos heróis ao conjunto
+    struct fila_nodo_t *heroi_id_aux = herois_presentes -> prim;
+    
     int cont = 0;
-
-    struct fila_nodo_t *heroi_id_aux = herois_presentes -> prim; 
 
     while (cont < herois_presentes -> num) {
 
@@ -247,18 +270,25 @@ struct cjto_t *verifica_habilidades (struct base_t *base, struct missao_t *missa
                 cjto_insere(conjunto_habilidades, i);
         }
 
-        cont++;
 
         heroi_id_aux = heroi_id_aux -> prox;
+
+        cont++;
     }
+
+    // libera memória
+    fila_destroi(herois_presentes);
 
     // compara o conjunto de habilidades presentes na base com as habilidades requeridas pela missão
     if ( (cjto_contem(conjunto_habilidades, missao -> habilidades)) == 1)
 
         return conjunto_habilidades;
     
-    else 
+    else {
+
+        cjto_destroi(conjunto_habilidades);
         return NULL;
+    }
 }
 
 // Função auxiliar da função Missão
@@ -278,8 +308,10 @@ struct base_t *encontra_bmp_apta (struct missao_t *missao, struct mundo_t *mundo
         int x2 = mundo -> bases[i].local.x;     // coordenada x do local da base
         int y2 = mundo -> bases[i].local.y;     // coordenada y do local da base
 
+        struct cjto_t *habilidades = (verifica_habilidades(&mundo -> bases[i], missao, mundo));
+
         // verifica se há bases aptas e qual delas é mais próxima da missão
-        if ( (verifica_habilidades(&mundo -> bases[i], missao, mundo)) != NULL) {
+        if (habilidades != NULL) {
 
             // calcula a distância cartesiana das bases
             int distancia = sqrt( ( pow((x2 - x1), 2) ) + (pow((y2 - y1), 2) ) );
@@ -294,9 +326,13 @@ struct base_t *encontra_bmp_apta (struct missao_t *missao, struct mundo_t *mundo
         }
 
         // se a menor distância não tiver sido atualizada, significa que nenhuma base encontrada estava apta e base mais próxima recebe NULL
-        else if (menor_distancia == 28284)
+        else if (menor_distancia == 28284) {
 
             base_mais_proxima = NULL;
+        }
+
+        // libera memória
+        cjto_destroi(habilidades);
     }
 
     // retorna a base mais próxima ou NULL se não houver base mais próxima apta para a missão
@@ -340,7 +376,7 @@ void incrementa_experiencia(struct base_t *bmp, struct mundo_t *mundo) {
     // incrementa a experiência dos heróis 
     for (int i = 0; i < N_HEROIS; i++) {
 
-        if (bmp -> presentes -> flag[i] == true) {
+        if ( bmp -> presentes -> flag[i] == true ) {
 
             (mundo -> herois[i].experiencia) += 1;
         }
@@ -349,16 +385,16 @@ void incrementa_experiencia(struct base_t *bmp, struct mundo_t *mundo) {
 
 // Função auxiliar da função missão
 // Encontra o herói mais experiente da base mais próxima 
-struct heroi_t encontra_hme (struct base_t *bmp, struct mundo_t *mundo) {
+struct heroi_t *encontra_hme (struct base_t *bmp, struct mundo_t *mundo) {
 
     int maior_experiencia = 0;
 
-    struct heroi_t *heroi_mais_experiente;
+    struct heroi_t *heroi_mais_experiente = NULL;
 
     // percorre o conjunto de heróis presentes na base
     for (int i = 0; i < N_HEROIS; i++) {
 
-        if (bmp -> presentes -> flag[i] == true) {
+        if ( bmp -> presentes -> flag[i] == true ){
 
             int heroi_experiencia = mundo -> herois[i].experiencia;
 
@@ -371,7 +407,7 @@ struct heroi_t encontra_hme (struct base_t *bmp, struct mundo_t *mundo) {
         }
     }
 
-    return *heroi_mais_experiente;
+    return heroi_mais_experiente;
 }
 
 // Função Missão
@@ -380,6 +416,11 @@ void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct
 
     // incrementa a quantidade de tentativas de concluir a missão
     missao -> quantidade_tentativas += 1;
+
+    if (missao -> quantidade_tentativas == 1) {
+    
+        mundo -> missoes_total += 1;
+    }
 
     printf("%6d: MISSAO %d TENT %d HAB REQ: [", *tempo, missao -> id, missao -> quantidade_tentativas);
     cjto_imprime(missao -> habilidades);
@@ -392,35 +433,47 @@ void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct
     if (bmp != NULL) {
 
         missao -> status = 1;   // marca a missão como concluída
-        incrementa_experiencia(bmp, mundo);
+
+        mundo -> missoes_cumpridas += 1;    // incrementa contador do total de missões cumpridas
+
+        bmp -> missoes_num += 1;    // incrementa o contador de quantas missões a base participou
+
+        incrementa_experiencia(bmp, mundo); 
 
         struct cjto_t *habilidades_reunidas = verifica_habilidades(bmp, missao, mundo);
 
         printf("%6d: MISSAO %d CUMPRIDA BASE %d HABS: [", *tempo, missao -> id, bmp -> id);
         cjto_imprime(habilidades_reunidas);
         printf("]\n");
+
+        cjto_destroi(habilidades_reunidas);
     }
 
     // caso em que não há uma base apta
     else if (bmp == NULL) {
 
         // verifica se existem Compostos V disponíveis e se o tempo é múltiplo de 2500 (pré-requisitos para usar o CompostoV)
-        if ( ( (mundo -> NCompostosV ) > 0 ) && ( (*tempo / 2500) == 0 )) {
+        if ( ( (mundo -> NCompostosV ) > 0 ) && (*tempo % 2500 == 0) ) {
 
             mundo -> NCompostosV -= 1;  // decrementa a quantidade total de compostos V
 
             missao -> status = 1;   // marca a missão como concluída
+
+            mundo -> missoes_cumpridas += 1;    // incrementa a quantidade total de missões cumpridas
             
             struct base_t *bmp_nao_apta = encontra_bmp(missao, mundo);  // encontra a base mais próxima, sem se importar se ela possui as habilidades necessárias 
 
-            struct heroi_t heroi_mais_experiente = encontra_hme(bmp_nao_apta, mundo);     // encontra o heroi mais experiente da base
+            bmp_nao_apta -> missoes_num += 1;    // incrementa o contador de quantas missões a base participou
 
+            struct heroi_t *heroi_mais_experiente = encontra_hme(bmp_nao_apta, mundo);     // encontra o heroi mais experiente da base
+            
             // crie e insere na LEF o evento MORRE para o herói mais experiente
-            heroi_mais_experiente.status = 0;
+            if ( (heroi_mais_experiente) != NULL) {
 
-            struct evento_t *evento_morre = cria_evento(*tempo, MORRE, &heroi_mais_experiente, bmp_nao_apta, missao);
+                struct evento_t *evento_morre = cria_evento(*tempo, MORRE, heroi_mais_experiente, bmp_nao_apta, missao);
 
-            fprio_insere(lef, evento_morre, MORRE, *tempo);
+                fprio_insere(lef, evento_morre, MORRE, *tempo);
+            }
 
             incrementa_experiencia(bmp_nao_apta, mundo);    // incrementa experiência para os demais heróis da base
 
@@ -429,6 +482,8 @@ void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct
             printf("%6d: MISSAO %d CUMPRIDA BASE %d HABS: [", *tempo, missao -> id, bmp_nao_apta -> id);
             cjto_imprime(habilidades_reunidas);
             printf("]\n");
+
+            cjto_destroi(habilidades_reunidas);
         }
     }
 
@@ -440,9 +495,51 @@ void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct
         fprio_insere(lef, evento_missao, MISSAO, *tempo + (24 * 60));
 
         printf("%6d: MISSAO %d IMPOSSIVEL\n", *tempo, missao -> id);
-    }
+    } 
 
     return 0;
+}
+
+int tentativas_min (struct mundo_t *mundo) {
+
+    int menor_tentativa = 1000;
+
+    for (int i = 0; i < N_MISSOES; i++) {
+
+        if ( (mundo -> missoes[i].quantidade_tentativas) < menor_tentativa) 
+
+            menor_tentativa = mundo -> missoes[i].quantidade_tentativas;
+    }
+
+    return menor_tentativa;
+}
+
+int tentativas_max (struct mundo_t *mundo) {
+
+    int maior_tentativa = 0;
+
+    for (int i = 0; i < N_MISSOES; i++) {
+
+        if ((mundo -> missoes[i].quantidade_tentativas) > maior_tentativa)
+
+            maior_tentativa = mundo -> missoes[i].quantidade_tentativas;
+    }
+
+    return maior_tentativa;
+}
+
+double calcula_media (struct mundo_t *mundo) {
+
+    int soma = 0;
+
+    for (int i = 0; i < N_MISSOES; i++) {
+
+        soma += mundo -> missoes[i].quantidade_tentativas;
+    }
+
+    double media = soma / mundo -> missoes_total;
+
+    return media;
 }
 
 // Função Fim
@@ -452,27 +549,92 @@ void *fim (int *tempo, struct mundo_t *mundo, struct fprio_t *lef) {
     // apresenta as estatísticas
     printf("%6d: FIM\n", *tempo); 
 
-    // imprime as estatísticas dos heróis
-    for (int i = 0; i < N_HEROIS; i++) {
+        // imprime as estatísticas dos heróis
+        for (int i = 0; i < N_HEROIS; i++) {
 
-        printf("heroi id %d status %d\n", mundo->herois[i].id, mundo->herois[i].status);
-        if ( (mundo -> herois[i].status) == 0) {
+            if ( (mundo -> herois[i].status) == 0) {
 
-            printf("HEROI %2d MORTO PAC %3d VEL %4d EXP %4d HABS [", mundo -> herois[i].id, mundo -> herois[i].paciencia, mundo -> herois[i].velocidade, mundo -> herois[i].experiencia);
-            cjto_imprime(mundo -> herois[i].habilidades);
-            printf("]\n");
+                printf("HEROI %2d MORTO PAC %3d VEL %4d EXP %4d HABS [", mundo -> herois[i].id, mundo -> herois[i].paciencia, mundo -> herois[i].velocidade, mundo -> herois[i].experiencia);
+                cjto_imprime(mundo -> herois[i].habilidades);
+                printf("]\n");
+            }
+
+            else {
+
+                printf("HEROI %2d VIVO PAC %3d VEL %4d EXP %4d HABS [", mundo -> herois[i].id, mundo -> herois[i].paciencia, mundo -> herois[i].velocidade, mundo -> herois[i].experiencia);
+                cjto_imprime(mundo -> herois[i].habilidades);
+                printf("]\n");
+            }
+
         }
 
-        else if ( (mundo -> herois[i].status) == 1) {
+        // imprime as estatísticas das bases
+        for (int i = 0; i < N_BASES; i++) {
 
-            printf("HEROI %2d VIVO PAC %3d VEL %4d EXP %4d HABS [", mundo -> herois[i].id, mundo -> herois[i].paciencia, mundo -> herois[i].velocidade, mundo -> herois[i].experiencia);
-            cjto_imprime(mundo -> herois[i].habilidades);
-            printf("]\n");
+            printf("BASE %2d LOT %2d FILA MAX %2d MISSOES %d\n", mundo -> bases[i].id, mundo -> bases[i].lotacao, mundo -> bases[i].fila_max, mundo -> bases[i].missoes_num);
+        }
+    
+        // imprime as estatísticas das missões
+        printf("EVENTOS TRATADOS: %d\n", mundo -> eventos_tratados);
+
+            // calcula porcentagem de missões cumpridas
+            double porcentagem = ( ((double)mundo -> missoes_cumpridas / mundo -> missoes_total) ) * 100;
+
+            printf("MISSOES CUMPRIDAS: %d/%d (%.1f%%)\n", mundo -> missoes_cumpridas, mundo -> missoes_total, porcentagem);
+
+            // calcula tentativas / missão 
+            int min = tentativas_min(mundo);
+            int max = tentativas_max(mundo);
+            double media = calcula_media(mundo);
+
+            printf("TENTATIVAS/MISSAO: MIN %d, MAX %d, MEDIA %.1f\n", min, max, media);
+
+
+        // calcula taxa de mortalidade
+        int mortos_num = 0;
+
+        for (int i = 0; i < N_HEROIS; i++) {
+
+            if ( (mundo -> herois[i].status) == 0)
+
+                mortos_num++;
         }
 
-    }
+        double taxa_de_mortalidade = ( (double)mortos_num / N_HEROIS) * 100;
+
+        printf("TAXA MORTALIDADE: %.1f%%\n", taxa_de_mortalidade);
+    
+    // libera memória alocada
+
+        // libera a memória dos heróis
+        for (int i = 0; i < N_HEROIS; i++) {
+
+            cjto_destroi(mundo -> herois[i].habilidades);
+        }
+
+        free(mundo -> herois);
+
+        // libera a memória das bases 
+        for (int i = 0; i < N_BASES; i++) {
+
+            cjto_destroi(mundo -> bases[i].presentes);
+
+            fila_destroi(mundo -> bases[i].espera);
+        }
+
+        free(mundo -> bases);
+
+        // libera a memória das missões 
+        for (int i = 0; i < N_MISSOES; i++) {
+
+            cjto_destroi(mundo -> missoes[i].habilidades);
+        }
+
+        free(mundo -> missoes);
+
+    fprio_destroi(lef);
 
     return 0;
 
-}
+} 
 
