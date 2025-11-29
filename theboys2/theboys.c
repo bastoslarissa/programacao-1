@@ -48,7 +48,7 @@ int main ()
 
     else if ( (evento_atual -> tipo) == DESISTE) {
 
-      desiste(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
+      desiste(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, mundo, lef);
     }
 
     else if ( (evento_atual -> tipo) == AVISA) {

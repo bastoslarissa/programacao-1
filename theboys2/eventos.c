@@ -84,7 +84,7 @@ void *espera (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fpr
 
 // Função Desiste
 // O herói desiste de entrar na base
-void *desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
+void *desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef) {
 
     // verificação
     if (!tempo || !heroi || !base || !lef)
@@ -92,7 +92,7 @@ void *desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fp
 
     // escolhe uma base destino aleatória
     int id_aleatorio = aleat(0, N_BASES - 1); 
-    struct base_t *base_destino = &base[id_aleatorio];
+    struct base_t *base_destino = &mundo -> bases[id_aleatorio];
 
     // cria e insere na LEF o evento VIAJA
     struct evento_t *evento_viaja = cria_evento(*tempo, VIAJA, heroi, base_destino, NULL);
@@ -112,12 +112,12 @@ void *avisa (int *tempo, struct base_t *base, struct mundo_t *mundo, struct fpri
     if (!tempo || !base || !mundo|| !lef)
         return NULL;
 
+    printf("%6d: AVISA PORTEIRO BASE %d (%2d/%2d) FILA [", *tempo, base -> id, cjto_card(base -> presentes), base -> lotacao);
+    fila_imprime(base -> espera);
+    printf("]\n");
+
     // Enquanto houver vaga em B e houver heróis esperando na fila
     while ( ( (cjto_card(base -> presentes)) < base -> lotacao) && (fila_tamanho(base -> espera) > 0) ) {
-
-        printf("%6d: AVISA PORTEIRO BASE %d (%2d/%2d) FILA [", *tempo, base -> id, fila_tamanho(base -> espera), base -> lotacao);
-        fila_imprime(base -> espera);
-        printf("]\n");
 
         // retira o primeiro herói da fila
         struct heroi_t *heroi = &mundo->herois[base -> espera -> prim -> item];
@@ -350,20 +350,26 @@ struct base_t *encontra_bmp (struct missao_t *missao, struct mundo_t *mundo) {
     // calcula a distância de cada base ao local da missão
     for (int i = 0; i < N_BASES; i++) {
 
-        int x2 = mundo -> bases[i].local.x;     // coordenada x do local da base
-        int y2 = mundo -> bases[i].local.y;     // coordenada y do local da base
+        if (cjto_card (mundo -> bases[i].presentes) != 0) {
 
-        // calcula a distância cartesiana das bases
-        int distancia = sqrt( ( pow((x2 - x1), 2) ) + (pow((y2 - y1), 2) ) );
+            int x2 = mundo -> bases[i].local.x;     // coordenada x do local da base
+            int y2 = mundo -> bases[i].local.y;     // coordenada y do local da base
 
-        // verifica se essa é a base mais próxima 
-        if (distancia < menor_distancia) {
+            // calcula a distância cartesiana das bases
+            int distancia = sqrt( ( pow((x2 - x1), 2) ) + (pow((y2 - y1), 2) ) );
 
-        // atribui a menor distância à base 
-            menor_distancia = distancia;
-            base_mais_proxima = &mundo -> bases[i];
+            // verifica se essa é a base mais próxima 
+            if (distancia < menor_distancia) {
 
+            // atribui a menor distância à base 
+                menor_distancia = distancia;
+                base_mais_proxima = &mundo -> bases[i];
+
+            }
         }
+
+        else
+            base_mais_proxima = NULL;
     }
 
     return base_mais_proxima;
@@ -452,16 +458,16 @@ void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct
     // caso em que não há uma base apta
     else if (bmp == NULL) {
 
+        struct base_t *bmp_nao_apta = encontra_bmp(missao, mundo);  // encontra a base mais próxima, sem se importar se ela possui as habilidades necessárias 
+
         // verifica se existem Compostos V disponíveis e se o tempo é múltiplo de 2500 (pré-requisitos para usar o CompostoV)
-        if ( ( (mundo -> NCompostosV ) > 0 ) && (*tempo % 2500 == 0) ) {
+        if ( ( (mundo -> NCompostosV ) > 0 ) && (*tempo % 2500 == 0) && bmp_nao_apta != NULL) {
 
             mundo -> NCompostosV -= 1;  // decrementa a quantidade total de compostos V
 
             missao -> status = 1;   // marca a missão como concluída
 
             mundo -> missoes_cumpridas += 1;    // incrementa a quantidade total de missões cumpridas
-            
-            struct base_t *bmp_nao_apta = encontra_bmp(missao, mundo);  // encontra a base mais próxima, sem se importar se ela possui as habilidades necessárias 
 
             bmp_nao_apta -> missoes_num += 1;    // incrementa o contador de quantas missões a base participou
 
@@ -485,17 +491,17 @@ void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct
 
             cjto_destroi(habilidades_reunidas);
         }
+
+        else {
+
+            // adia a missão inserindo ela na lef novamente
+            struct evento_t *evento_missao = cria_evento(*tempo + (24 * 60), MISSAO, NULL, NULL, missao);
+
+            fprio_insere(lef, evento_missao, MISSAO, *tempo + (24 * 60));
+
+            printf("%6d: MISSAO %d IMPOSSIVEL\n", *tempo, missao -> id);
+        } 
     }
-
-    else {
-
-        // adia a missão inserindo ela na lef novamente
-        struct evento_t *evento_missao = cria_evento(*tempo + (24 * 60), MISSAO, NULL, NULL, missao);
-
-        fprio_insere(lef, evento_missao, MISSAO, *tempo + (24 * 60));
-
-        printf("%6d: MISSAO %d IMPOSSIVEL\n", *tempo, missao -> id);
-    } 
 
     return 0;
 }

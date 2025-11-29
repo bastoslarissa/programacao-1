@@ -59,7 +59,7 @@ struct fila_nodo_t *cria_nodo (int item) {
 int fila_insere (struct fila_t *f, int item) {
 
     // verificação
-    if (!f || !item) {
+    if (!f) {
         return 0;
     }
 

@@ -4,7 +4,7 @@ void *chega (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fpri
 
 void *espera (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef);
 
-void *desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef);
+void *desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef);
 
 void *avisa (int *tempo, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef);
 

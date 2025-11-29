@@ -75,7 +75,7 @@ void inicializa_mundo (struct mundo_t *mundo) {
         mundo -> bases[i].local.x = aleat(0, N_TAMANHO_MUNDO - 1);  // coordenada x aleatória 
         mundo -> bases[i].local.y = aleat(0, N_TAMANHO_MUNDO - 1);  // coordenada y aleatória 
         mundo -> bases[i].lotacao = aleat(3, 10);   // nº aleatório entre 3 e 10
-        mundo -> bases[i].presentes = cjto_cria(mundo -> bases[i].lotacao);     // conjunto com capacidade da lotação aleatória gerada acima
+        mundo -> bases[i].presentes = cjto_cria(N_HEROIS);     // conjunto com capacidade da lotação aleatória gerada acima
         mundo -> bases[i].espera = fila_cria();     // fila vazia
         mundo -> bases[i].missoes_num = 0;      // inicializa a base com 0 missões participadas
         mundo -> bases[i].fila_max = 0;     // inicializa a base com fila max com 0 pessoas
