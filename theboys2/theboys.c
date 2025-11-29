@@ -16,7 +16,7 @@ int main ()
 
     int relogio = 0; // inicializa o relógio
 
-    srand(0); // inicializa a semente randomica
+    srand(time(NULL)); // inicializa a semente randomica
 
     struct mundo_t *mundo = malloc(sizeof(struct mundo_t)); // declaração do mundo
 
@@ -86,16 +86,7 @@ int main ()
       fim(&evento_atual -> tempo, mundo, lef);
     }
 
-    /* -------------------------------------------------------------------------------------
-                                  EXECUÇÃO DO MUNDO
-   ------------------------------------------------------------------------------------ */
-
-/* void iniciar_o_mundo () {
-
-
-
-    
-} */
+    free(evento_atual);
 
   }
 

@@ -3,11 +3,12 @@
 
 // Função Chega 
 // Herói chega na base e decide se vai esperar ou desistir de entrar
-void *chega (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
+int chega (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
 
     // verificação
     if (!tempo || !heroi || !base || !lef)
-        return NULL;
+
+        return 0;
 
     int espera;
 
@@ -53,22 +54,24 @@ void *chega (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fpri
         printf("%6d: CHEGA HEROI %2d BASE %d (%2d/%2d) DESISTE\n", *tempo, heroi -> id, base -> id, cjto_card(base -> presentes), base -> lotacao);
     }
 
-    return 0; 
+    return 1;
+
 } 
 
 // Função Espera
 // O herói entra na fila de espera da base
-void *espera (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
+int espera (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
 
     // verificação
     if (!tempo || !heroi || !base || !lef)
-        return NULL;
+
+        return 0;
 
     // insere o herói no fim da fila de espera da base
-    fila_insere( (base -> espera), heroi -> id);
+    fila_insere( (base -> espera), heroi -> id );
 
     // verifica se o tamanho da fila de espera é o tamanho máximo de fila que a base já teve, se sim, atualiza;
-    if ( (base -> espera -> num) > base -> fila_max)
+    if ( (base -> espera -> num) > base -> fila_max )
 
         base -> fila_max = base -> espera -> num;
 
@@ -79,16 +82,17 @@ void *espera (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fpr
 
     printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", *tempo, heroi -> id, base -> id, fila_tamanho(base -> espera));
 
-    return 0;
+    return 1;
 }
 
 // Função Desiste
 // O herói desiste de entrar na base
-void *desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef) {
+int desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef) {
 
     // verificação
     if (!tempo || !heroi || !base || !lef)
-        return NULL;
+
+        return 0;
 
     // escolhe uma base destino aleatória
     int id_aleatorio = aleat(0, N_BASES - 1); 
@@ -101,16 +105,17 @@ void *desiste (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mu
 
     printf("%6d: DESISTE HEROI %2d BASE %d\n", *tempo, heroi -> id, base_destino -> id);
 
-    return 0;
+    return 1;
 }
 
 // Função Avisa
 // O porteiro libera a entrada de alguns heróis na base
-void *avisa (int *tempo, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef) {
+int avisa (int *tempo, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef) {
 
     // verificação
     if (!tempo || !base || !mundo|| !lef)
-        return NULL;
+
+        return 0;
 
     printf("%6d: AVISA PORTEIRO BASE %d (%2d/%2d) FILA [", *tempo, base -> id, cjto_card(base -> presentes), base -> lotacao);
     fila_imprime(base -> espera);
@@ -134,12 +139,17 @@ void *avisa (int *tempo, struct base_t *base, struct mundo_t *mundo, struct fpri
         printf("%6d: AVISA PORTEIRO BASE %d ADMITE %2d\n", *tempo, base -> id, heroi -> id);
     }
 
-    return 0;
+    return 1;
 }
 
 // Função Entra
 // O herói entra na base, decide quanto tempo vai ficar e agenda sua saída da base
-void *entra (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
+int entra (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fprio_t *lef) {
+
+    // verificação
+    if (!tempo || !heroi || !base || !lef)
+
+        return 0;
 
     // calcula o TPB (tempo de permanência na base)
     int tpb = 15 + heroi -> paciencia * (aleat(1, 20));
@@ -151,17 +161,18 @@ void *entra (int *tempo, struct heroi_t *heroi, struct base_t *base, struct fpri
 
     printf("%6d: ENTRA HEROI %2d BASE %d (%2d/%2d)\n", *tempo, heroi -> id, base -> id, cjto_card(base -> presentes), base -> lotacao);
 
-    return 0;
+    return 1;
 }
 
 // Função Sai
 // O herói sai da base atual e escolhe uma base destino para viajar
 // O porteiro é avisado que uma vaga foi liberada na base 
-void *sai (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef) {
+int sai (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mundo_t *mundo, struct fprio_t *lef) {
 
     // verificação
     if (!tempo || !heroi || !base || !lef)
-        return NULL;
+
+        return 0;
 
     // retira o herói do conjunto de heróis presentes na base
     cjto_retira(base -> presentes, heroi -> id);
@@ -182,17 +193,18 @@ void *sai (int *tempo, struct heroi_t *heroi, struct base_t *base, struct mundo_
 
     printf("%6d: SAI HEROI %3d BASE %d (%2d/%2d)\n", *tempo, heroi -> id, base -> id, cjto_card(base -> presentes), base -> lotacao);
 
-    return 0;
+    return 1;
 }
 
 // Função Viaja
 // o herói se desloca para uma base destino (que pode ser a mesma que ele está)
 // Fórmula de cálculo de distância cartesiana: √((x2 - x1)² + (y2 - y1)²)
-void *viaja (int *tempo, struct heroi_t *heroi, struct base_t *base_d, struct mundo_t *mundo, struct fprio_t *lef) {
+int viaja (int *tempo, struct heroi_t *heroi, struct base_t *base_d, struct mundo_t *mundo, struct fprio_t *lef) {
     
     // verificação
     if (!tempo || !heroi || !base_d || !mundo || !lef)
-        return NULL;
+
+        return 0;
 
     int x1 = mundo -> bases[heroi -> base].local.x;    // coordenada x base origem 
     int y1 = mundo -> bases[heroi -> base].local.y;    // coordenada y base origem
@@ -213,14 +225,19 @@ void *viaja (int *tempo, struct heroi_t *heroi, struct base_t *base_d, struct mu
 
     printf("%6d: VIAJA HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", *tempo, heroi -> id, mundo -> bases[heroi -> base].id, base_d -> id, distancia, heroi -> velocidade, *tempo + duracao);
 
-    return 0;
+    return 1;
 
 }
 
 // Função Morre
 // O herói morre
 // O herói é retirado da base, o porteiro é avisado e os eventos futuros com esse herói são ignorados
-void *morre (int *tempo, struct heroi_t *heroi, struct base_t *base, struct missao_t *missao, struct fprio_t *lef) {
+int morre (int *tempo, struct heroi_t *heroi, struct base_t *base, struct missao_t *missao, struct fprio_t *lef) {
+
+    // verificação
+    if (!tempo || !heroi || !base || !missao || !lef)
+
+        return 0;
 
     // retira o herói do conjunto de heróis presentes na base
     cjto_retira(base -> presentes, heroi -> id);
@@ -235,12 +252,17 @@ void *morre (int *tempo, struct heroi_t *heroi, struct base_t *base, struct miss
 
     printf("%6d: MORRE HEROI %2d MISSAO %d\n", *tempo, heroi -> id, missao -> id);
 
-    return 0;
+    return 1;
 }
 
 // Função auxiliar da função Missão
 // Verifica se os heróis presentes na base possuem juntos as habilidades necessárias para a missão
 struct cjto_t *verifica_habilidades (struct base_t *base, struct missao_t *missao, struct mundo_t *mundo) {
+
+   // verificação 
+    if (!base || !missao || !mundo) 
+
+        return 0;
 
     // cria uma fila com os heróis presentes na base
     struct fila_t *herois_presentes = fila_cria();
@@ -296,6 +318,11 @@ struct cjto_t *verifica_habilidades (struct base_t *base, struct missao_t *missa
 // Retorna a base mais próxima ou NULL se não houver base apta
 struct base_t *encontra_bmp_apta (struct missao_t *missao, struct mundo_t *mundo) {
 
+    // verificação
+    if (!missao || !mundo)
+
+        return 0;
+
     int x1 = missao -> local.x;     // coordenada x do local da missão
     int y1 = missao -> local.y;     // coordenada y do local da missão
 
@@ -325,11 +352,11 @@ struct base_t *encontra_bmp_apta (struct missao_t *missao, struct mundo_t *mundo
             }
         }
 
-        // se a menor distância não tiver sido atualizada, significa que nenhuma base encontrada estava apta e base mais próxima recebe NULL
-        else if (menor_distancia == 28284) {
+            // se a menor distância não tiver sido atualizada, significa que nenhuma base encontrada estava apta e base mais próxima recebe NULL
+            else if (menor_distancia == 28284) {
 
-            base_mais_proxima = NULL;
-        }
+                base_mais_proxima = NULL;
+            }
 
         // libera memória
         cjto_destroi(habilidades);
@@ -341,6 +368,11 @@ struct base_t *encontra_bmp_apta (struct missao_t *missao, struct mundo_t *mundo
 
 struct base_t *encontra_bmp (struct missao_t *missao, struct mundo_t *mundo) {
 
+    // verificação 
+    if (!missao || !mundo)
+
+        return 0;
+
     int x1 = missao -> local.x;     // coordenada x do local da missão
     int y1 = missao -> local.y;     // coordenada y do local da missão
 
@@ -350,7 +382,7 @@ struct base_t *encontra_bmp (struct missao_t *missao, struct mundo_t *mundo) {
     // calcula a distância de cada base ao local da missão
     for (int i = 0; i < N_BASES; i++) {
 
-        if (cjto_card (mundo -> bases[i].presentes) != 0) {
+        if (cjto_card (mundo -> bases[i].presentes) > 0) {     // verifica se há heróis na base
 
             int x2 = mundo -> bases[i].local.x;     // coordenada x do local da base
             int y2 = mundo -> bases[i].local.y;     // coordenada y do local da base
@@ -377,7 +409,12 @@ struct base_t *encontra_bmp (struct missao_t *missao, struct mundo_t *mundo) {
 
 // Função auxiliar da função missão 
 // Incrementa experiência aos heróis que participaram da missão
-void incrementa_experiencia(struct base_t *bmp, struct mundo_t *mundo) {
+int incrementa_experiencia(struct base_t *bmp, struct mundo_t *mundo) {
+
+    // verificação
+    if (!bmp || !mundo)
+
+        return 0;
 
     // incrementa a experiência dos heróis 
     for (int i = 0; i < N_HEROIS; i++) {
@@ -387,11 +424,18 @@ void incrementa_experiencia(struct base_t *bmp, struct mundo_t *mundo) {
             (mundo -> herois[i].experiencia) += 1;
         }
     }
+
+    return 1;
 }
 
 // Função auxiliar da função missão
 // Encontra o herói mais experiente da base mais próxima 
 struct heroi_t *encontra_hme (struct base_t *bmp, struct mundo_t *mundo) {
+
+    // verificação
+    if(!bmp || !mundo)
+
+        return NULL;
 
     int maior_experiencia = 0;
 
@@ -418,7 +462,12 @@ struct heroi_t *encontra_hme (struct base_t *bmp, struct mundo_t *mundo) {
 
 // Função Missão
 // Uma missão é disparada em um local aleatório com habilidades aleatórias como condição
-void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct fprio_t *lef) {
+int missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct fprio_t *lef) {
+
+    //verificação
+    if (!missao || !mundo || !lef)
+
+        return 0;
 
     // incrementa a quantidade de tentativas de concluir a missão
     missao -> quantidade_tentativas += 1;
@@ -503,10 +552,15 @@ void *missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct
         } 
     }
 
-    return 0;
+    return 1;
 }
 
 int tentativas_min (struct mundo_t *mundo) {
+
+    // verificação
+    if (!mundo)
+
+        return 0;
 
     int menor_tentativa = 1000;
 
@@ -522,6 +576,11 @@ int tentativas_min (struct mundo_t *mundo) {
 
 int tentativas_max (struct mundo_t *mundo) {
 
+    // verificação
+    if (!mundo)
+
+        return 0;
+
     int maior_tentativa = 0;
 
     for (int i = 0; i < N_MISSOES; i++) {
@@ -536,6 +595,11 @@ int tentativas_max (struct mundo_t *mundo) {
 
 double calcula_media (struct mundo_t *mundo) {
 
+    // verificação 
+    if (!mundo)
+
+        return 0;
+
     int soma = 0;
 
     for (int i = 0; i < N_MISSOES; i++) {
@@ -543,14 +607,19 @@ double calcula_media (struct mundo_t *mundo) {
         soma += mundo -> missoes[i].quantidade_tentativas;
     }
 
-    double media = soma / mundo -> missoes_total;
+    double media = (double)soma / mundo -> missoes_total;
 
     return media;
 }
 
 // Função Fim
 // Encerra a simulação e apresenta as estatísticas das entidades
-void *fim (int *tempo, struct mundo_t *mundo, struct fprio_t *lef) {
+int fim (int *tempo, struct mundo_t *mundo, struct fprio_t *lef) {
+
+    // verificação
+    if (!tempo || !mundo || !lef)
+
+        return 0;
 
     // apresenta as estatísticas
     printf("%6d: FIM\n", *tempo); 
@@ -640,7 +709,7 @@ void *fim (int *tempo, struct mundo_t *mundo, struct fprio_t *lef) {
 
     fprio_destroi(lef);
 
-    return 0;
+    return 1;
 
 } 
 
