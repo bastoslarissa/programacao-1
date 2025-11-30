@@ -767,8 +767,6 @@ void executar_o_laco_de_simulacao (struct mundo_t *mundo, struct fprio_t *lef) {
     free(evento_atual);
 
    }
-
-  free(mundo);
 }
 
 void destruir_o_mundo (struct mundo_t *mundo, struct fprio_t *lef) {
@@ -802,4 +800,6 @@ void destruir_o_mundo (struct mundo_t *mundo, struct fprio_t *lef) {
     free(mundo -> missoes);
 
     fprio_destroi(lef);
+
+      free(mundo);
 }
