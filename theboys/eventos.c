@@ -1,5 +1,10 @@
 #include "mundo.h"
 #include <math.h>
+#include <time.h>
+
+/* -----------------------------------------------------------------
+                             FUNÇÕES                               
+   -----------------------------------------------------------------*/
 
 // Função Chega 
 // Herói chega na base e decide se vai esperar ou desistir de entrar
@@ -678,38 +683,123 @@ int fim (int *tempo, struct mundo_t *mundo, struct fprio_t *lef) {
         double taxa_de_mortalidade = ( (double)mortos_num / N_HEROIS) * 100;
 
         printf("TAXA MORTALIDADE: %.1f%%\n", taxa_de_mortalidade);
-    
-    // libera memória alocada
-
-        // libera a memória dos heróis
-        for (int i = 0; i < N_HEROIS; i++) {
-
-            cjto_destroi(mundo -> herois[i].habilidades);
-        }
-
-        free(mundo -> herois);
-
-        // libera a memória das bases 
-        for (int i = 0; i < N_BASES; i++) {
-
-            cjto_destroi(mundo -> bases[i].presentes);
-
-            fila_destroi(mundo -> bases[i].espera);
-        }
-
-        free(mundo -> bases);
-
-        // libera a memória das missões 
-        for (int i = 0; i < N_MISSOES; i++) {
-
-            cjto_destroi(mundo -> missoes[i].habilidades);
-        }
-
-        free(mundo -> missoes);
-
-    fprio_destroi(lef);
 
     return 1;
 
 } 
 
+/* -----------------------------------------------------------------
+                        EXECUÇÃO DO PROGRAMA                               
+   -----------------------------------------------------------------*/
+
+void iniciar_o_mundo (struct mundo_t *mundo, struct fprio_t *lef) {
+
+    srand(time(NULL)); // inicializa a semente randomica
+
+    // inicializa o mundo e os eventos iniciais
+    inicializa_mundo(mundo);
+    eventos_iniciais(mundo, lef);
+}
+
+void executar_o_laco_de_simulacao (struct mundo_t *mundo, struct fprio_t *lef) {
+
+    int relogio = 0; // inicializa o relógio
+
+    // executa os eventos da fprio
+    while (relogio < T_FIM_DO_MUNDO) {
+
+    struct evento_t *evento_atual = fprio_retira(lef, &lef -> prim -> tipo, &lef -> prim -> prio);
+
+    mundo -> eventos_tratados += 1;
+    
+    relogio = evento_atual -> tempo;
+
+    if ( (evento_atual -> tipo) == CHEGA) {
+
+        chega(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == ESPERA) {
+
+      espera(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == DESISTE) {
+
+      desiste(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, mundo, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == AVISA) {
+
+      avisa(&evento_atual -> tempo, evento_atual -> base, mundo, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == ENTRA) {
+
+      entra(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == SAI) {
+
+      sai(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, mundo, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == VIAJA) {
+
+      viaja(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, mundo, lef);
+    }  
+
+    else if ( (evento_atual -> tipo) == MORRE) {
+      
+      morre(&evento_atual -> tempo, evento_atual -> heroi, evento_atual -> base, evento_atual -> missao, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == MISSAO) {
+
+      missao(&evento_atual -> tempo, evento_atual -> missao, mundo, lef);
+    }
+
+    else if ( (evento_atual -> tipo) == FIM) {
+
+      fim(&evento_atual -> tempo, mundo, lef);
+    }
+
+    free(evento_atual);
+
+   }
+
+  free(mundo);
+}
+
+void destruir_o_mundo (struct mundo_t *mundo, struct fprio_t *lef) {
+
+ // libera memória alocada
+
+    // libera a memória dos heróis
+    for (int i = 0; i < N_HEROIS; i++) {
+
+        cjto_destroi(mundo -> herois[i].habilidades);
+    }
+
+    free(mundo -> herois);
+
+    // libera a memória das bases 
+    for (int i = 0; i < N_BASES; i++) {
+
+        cjto_destroi(mundo -> bases[i].presentes);
+
+        fila_destroi(mundo -> bases[i].espera);
+    }
+
+    free(mundo -> bases);
+
+    // libera a memória das missões 
+    for (int i = 0; i < N_MISSOES; i++) {
+
+        cjto_destroi(mundo -> missoes[i].habilidades);
+    }
+
+    free(mundo -> missoes);
+
+    fprio_destroi(lef);
+}

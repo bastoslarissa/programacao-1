@@ -19,3 +19,9 @@ int morre (int *tempo, struct heroi_t *heroi, struct base_t *base, struct missao
 int missao (int *tempo, struct missao_t *missao, struct mundo_t *mundo, struct fprio_t *lef);
 
 int fim (int *tempo, struct mundo_t *mundo, struct fprio_t *lef);
+
+void iniciar_o_mundo (struct mundo_t *mundo, struct fprio_t *lef);
+
+void executar_o_laco_de_simulacao (struct mundo_t *mundo, struct fprio_t *lef);
+
+void destruir_o_mundo (struct mundo_t *mundo, struct fprio_t *lef);

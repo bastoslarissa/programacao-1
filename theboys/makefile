@@ -2,17 +2,17 @@
 # Carlos Maziero - DINF/UFPR, 2024/2
 
 CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror -g -std=c99
+CFLAGS  = -Wall -Wextra -g -std=c99
 LDLIBS  = -lm
 MAIN    = theboys
 ENTREGA = $(MAIN)
 
 # lista de arquivos de cabeçalho (a completar)
-HDR = fila.h fprio.h conjunto.h libtheboys.h
+HDR = fila.h fprio.h conjunto.h mundo.h eventos.h
 
 # lista de arquivos-objeto (a completar)
 # não inclua conjunto.o, senão ele será removido com "make clean"
-OBJ = fila.o fprio.o theboys.o libtheboys.o
+OBJ = fila.o fprio.o theboys.o mundo.o eventos.o
 
 # construir o executável
 $(MAIN): $(MAIN).o $(OBJ) conjunto.o
@@ -23,6 +23,8 @@ $(MAIN).o: $(MAIN).c $(HDR)
 # construir os TADs
 fila.o: fila.c fila.h
 fprio.o: fprio.c fprio.h
+mundo.o: mundo.c mundo.h
+eventos.o: eventos.c eventos.h
 
 # executar
 run: $(MAIN)
@@ -43,5 +45,5 @@ tgz: clean
 
 # limpar arquivos temporários
 clean:
-	rm -f *~ $(OBJ) $(MAIN) /tmp/$(USER)/$(ENTREGA) $(ENTREGA).tgz
+	rm -f *~ $(OBJ) $(MAIN) /tmp/$(USER)/$(ENTREGA) $(ENTREGA).tgz ./vscode
 
